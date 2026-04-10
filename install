@@ -1,0 +1,45 @@
+#!/bin/bash
+#....
+# Make sure only root can run our script
+
+# Retrouver le nombre de thread disponibles
+#cat /proc/cpuinfo | grep processor | wc -l
+
+if [ "$(id -u)" != "0" ]; then
+    echo "Veuillez passer en mode super utilisateur"
+else
+    #script lance en mode super utilisateur
+    echo "Installation de la bibliotheque"
+    echo "----------------------------------"
+    echo ""
+    echo ""
+    make
+    mv lib/liba2ri_dyn.so lib/liba2ri.so
+    cp lib/liba2ri* /usr/local/lib/
+    rm -rf /usr/local/include/a2ri
+    mkdir /usr/local/include/a2ri
+    cp include/*.h /usr/local/include/a2ri/
+    chmod -R 755 /usr/local/include/a2ri
+    mkdir /usr/local/share/doc/a2ri/
+    cp -r doc/* /usr/local/share/doc/a2ri/
+    rm -rf /usr/local/share/doc/a2ri/CVS
+    rm -rf /usr/local/share/doc/a2ri/*/CVS
+    rm -rf /usr/local/share/doc/a2ri/*/*/CVS
+    rm -rf /usr/local/share/doc/a2ri/*/*/*/CVS
+    rm -rf /usr/local/share/doc/a2ri/*/*/*/*/CVS
+    cp -r examples /usr/local/share/doc/a2ri/
+    mv lib/liba2ri.so lib/liba2ri_dyn.so
+    make clean
+    ldconfig
+    echo ""
+    echo ""
+    echo "----------------------------------"
+    echo "Les fichiers sont installes dans les repertoires /usr/local/include/a2ri/:/usr/local/lib/:/usr/local/share/doc/a2ri/"
+    i=`grep "include /usr/local/lib" /etc/ld.so.conf | wc -l`
+    if [[ $i -eq 0 ]]
+    then
+	echo "include /usr/local/lib/" >> /etc/ld.so.conf
+	ldconfig
+    fi
+fi
+ 

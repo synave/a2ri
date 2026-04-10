@@ -1,0 +1,45 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque POLYHEDRON}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Cette bibliothèque implémente les structures de données nécessaires au stockage des polyhèdres d'un maillage ainsi que des fonctions pour manipuler celles-ci.\\
+
+
+\section{Structures de données}
+Les polyhèdres sont communs aux structure de données \texttt{vf\_model} et \texttt{vef\_model}.\\
+Les polyhèdres étant les éléments de plus haut niveau, il n'y a pas d'adjacence à gérer pour cette structure.\\ 
+Seules les quatre faces sont stockées.\\
+\begin{verbatim}
+typedef struct
+{
+  int fa1; \\premiere face
+  int fa2; \\seconde face
+  int fa3; \\troiseieme face
+  int fa4; \\quatrieme face
+}polyhedron;
+\end{verbatim}
+
+\section{Fonctions}
+\textbullet \texttt{void polyhedron\_display(polyhedron p)}\\
+Affichage des quatre faces d'un polyhèdre sous la forme :\\
+\begin{verbatim}
+POLYHEDRON : (fa1,fa2,fa3,fa4)
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p} : le polyhèdre.\\
+\texttt{retour} : aucun.\\
+
+
+\end{document}

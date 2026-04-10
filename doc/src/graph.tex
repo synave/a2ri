@@ -1,0 +1,267 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+\usepackage{epsfig}
+\usepackage{times}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque GRAPH}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Cette bibliothèque implémente toutes les fonctions ayant un rapport avec la théorie des graphes. Un maillage étant un graphe plongé dans l'espace $\mathbf{R}^3$, il peut être considéré comme un graphe.
+
+
+\section{Fonctions}
+\section{Fonctions utilisant les \texttt{vf\_model}}
+\textbullet \texttt{void vf\_model\_dijkstra(vf\_model *m, int ve\_dep, int ve\_fin, int **list, int *size)}\\
+Fonction qui calcule le chemin le plus court entre les sommets \texttt{ve\_dep} et \texttt{ve\_fin} avec l'algorithme de Dijkstra~\cite{D1971}. La longueur totale du chemin est retournée. Le chemin est retournée sous forme d'une liste de sommets parcourus.\\
+L'algorithme de Dijkstra est illustré sur les figures \ref{maillage_base} et \ref{maillage_dijkstra}. L'algorithme peut fournir un résultat assez éloigné de la ligne droite comme montré sur la figure \ref{maillage_bad_dijkstra}. Bien que le chemin soit éloigné de la ligne droite, le chemin est le plus court.\\
+L'algorithme utilisé est une base de Dijkstra. La fin de l'algortihme a été modifiée afin d'éviter les cas de la figure \ref{maillage_bad_dijkstra}.\\
+\textbf{Algorithme} : (http://fr.wikipedia.org/wiki/Algorithme\_de\_Dijkstra)\\
+\begin{verbatim}
+Pour tous les sommets S du maillage
+  S.parcouru=INFINI
+  S.precedent=-1
+FinPour
+
+listeNonParcouru={ensemble des sommets}
+ve_deb.parcouru=0
+
+TantQue listeNonParcouru!={liste vide}
+  S1=minimum(listeNonParcouru)
+  listeNonParcouru.retirer(S1)
+  Pour tous les voisins S2 de S1
+    si S2.parcouru>S1.parcouru+|S1 S2| alors
+      S2.parcouru=S1.parcouru+|S1 S2|
+      S2.precedent=S1
+    FinSi
+  FinPour
+FinTantQue
+
+chemin={liste vide}
+S=ve_fin
+
+/*** PARTIE MODIFIE ***/
+TantQue S!=ve_deb
+  Pour tous les voisins S2 de S
+    Si S2.parcouru==S.precedent.parcouru && 
+       |S2 ve_fin|<|S.parcouru ve_fin|
+      S.precedent=S2
+    FinSi
+  FinPour
+  chemin.ajouterDebut(S)
+  S=S.precedent
+FinTantQue
+chemin.ajouterDebut(S)
+
+retourner ve_fin.parcouru
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type \texttt{vf\_model}.\\
+\texttt{ve\_dep} : numéro du sommet de départ.\\
+\texttt{ve\_fin} : numéro du sommet de fin.\\
+\texttt{list} : liste contenant les sommets parcourus.\\
+\texttt{size} : taille de la liste \texttt{list}.\\
+\texttt{retour} : la longueur du chemin entre les deux sommets.\\
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=5cm]{./images/grille.eps}
+\caption{}
+\label{maillage_base}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=5cm]{./images/grille_dijkstra.eps}
+\caption{Résultat de l'algorithme de Dijkstra}
+\label{maillage_dijkstra}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=5cm]{./images/grille_dijkstra_bad.eps}
+\caption{Autre résultat possible de l'algorithme de Dijkstra}
+\label{maillage_bad_dijkstra}
+\end{figure}
+
+
+\textbullet \texttt{void vf\_model\_chemin\_plus\_proche(vf\_model *m, int ve\_dep, int ve\_fin, int **list, int *size)}\\
+Fonction qui calcule le chemin le plus court entre les sommets \texttt{ve\_dep} et \texttt{ve\_fin}. La longueur totale du chemin est retournée. Le chemin est retournée sous forme d'une liste de sommets parcourus.\\
+\textbf{Algorithme} : \\
+\begin{verbatim}
+chemin.ajouter(ve_dep)
+S=ve_dep
+distance=0
+
+TantQue on trouve un sommet à ajouter
+  Si l'un des voisins S2 de S est plus proche de ve_fin
+    distance=distance+|S S2|
+    S=S2
+    chemin.ajouter(S)
+  FinSi
+FinTantQue
+
+Si S!=ve_fin
+  retourner -1
+Sinon
+  retourner distance
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type \texttt{vf\_model}.\\
+\texttt{ve\_dep} : numéro du sommet de départ.\\
+\texttt{ve\_fin} : numéro du sommet de fin.\\
+\texttt{list} : liste contenant les sommets parcourus.\\
+\texttt{size} : taille de la liste \texttt{list}.\\
+\texttt{retour} : la longueur du chemin entre les deux sommets.\\
+
+
+
+
+
+
+\section{Fonctions utilisant les \texttt{vf\_model}}
+\textbullet \texttt{void vef\_model\_dijkstra(vf\_model *m, int ve\_dep, int ve\_fin, int **list, int *size)}\\
+Fonction qui calcule le chemin le plus court entre les sommets \texttt{ve\_dep} et \texttt{ve\_fin} avec l'algorithme de Dijkstra~\cite{D1971}. La longueur totale du chemin est retournée. Le chemin est retournée sous forme d'une liste de sommets parcourus.\\
+L'algorithme de Dijkstra est illustré sur les figures \ref{maillage_base} et \ref{maillage_dijkstra}. L'algorithme peut fournir un résultat assez éloigné de la ligne droite comme montré sur la figure \ref{maillage_bad_dijkstra}. Bien que le chemin soit éloigné de la ligne droite, le chemin est le plus court.\\
+L'algorithme utilisé est une base de Dijkstra. La fin de l'algortihme a été modifiée afin d'éviter les cas de la figure \ref{maillage_bad_dijkstra}.\\
+\textbf{Algorithme} : (http://fr.wikipedia.org/wiki/Algorithme\_de\_Dijkstra)\\
+\begin{verbatim}
+Pour tous les sommets S du maillage
+  S.parcouru=INFINI
+  S.precedent=-1
+FinPour
+
+listeNonParcouru={ensemble des sommets}
+ve_deb.parcouru=0
+
+TantQue listeNonParcouru!={liste vide}
+  S1=minimum(listeNonParcouru)
+  listeNonParcouru.retirer(S1)
+  Pour tous les voisins S2 de S1
+    si S2.parcouru>S1.parcouru+|S1 S2| alors
+      S2.parcouru=S1.parcouru+|S1 S2|
+      S2.precedent=S1
+    FinSi
+  FinPour
+FinTantQue
+
+chemin={liste vide}
+S=ve_fin
+
+/*** PARTIE MODIFIE ***/
+TantQue S!=ve_deb
+  Pour tous les voisins S2 de S
+    Si S2.parcouru==S.precedent.parcouru && 
+       |S2 ve_fin|<|S.parcouru ve_fin|
+      S.precedent=S2
+    FinSi
+  FinPour
+  chemin.ajouterDebut(S)
+  S=S.precedent
+FinTantQue
+chemin.ajouterDebut(S)
+
+retourner ve_fin.parcouru
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type \texttt{vef\_model}.\\
+\texttt{ve\_dep} : numéro du sommet de départ.\\
+\texttt{ve\_fin} : numéro du sommet de fin.\\
+\texttt{list} : liste contenant les sommets parcourus.\\
+\texttt{size} : taille de la liste \texttt{list}.\\
+\texttt{retour} : la longueur du chemin entre les deux sommets.\\
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=5cm]{./images/grille.eps}
+\caption{}
+\label{maillage_base}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=5cm]{./images/grille_dijkstra.eps}
+\caption{Résultat de l'algorithme de Dijkstra}
+\label{maillage_dijkstra}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=5cm]{./images/grille_dijkstra_bad.eps}
+\caption{Autre résultat possible de l'algorithme de Dijkstra}
+\label{maillage_bad_dijkstra}
+\end{figure}
+
+\textbullet \texttt{vef\_model* vef\_model\_nearest\_neighbour\_graph(vef\_model *m)}\\
+Calcul du graphe de voisin le plus proche tel que défini dans \cite{AS2000}.\\
+\textbf{Définition du graphe de voisin le plus proche :}\\
+Considérons un nuage de point $P$. Le graphe des voisins le plus proche est l'ensemble des aretes $E$ telles que :\\
+$E \subseteq P \times P$ et $E=\{e_k=(P_i,P_j),k=1,\cdots ,n / P_j\textrm{ est le point le plus proche de }P_i\}$.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type \texttt{vef\_model}.\\
+\texttt{retour} : un \texttt{vef\_model} contenant les sommets et les aretes du graphe des voisins les plus proche.\\
+
+\textbullet \texttt{vef\_model* vef\_model\_gabriel\_graph(vef\_model *m)}\\
+Calcul du "Gabriel graph" tel que défini dans \cite{AS2000}.\\
+\textbf{Définition du "Gabriel graph" :}\\
+Considérons un nuage de point $P$. Le "Gabriel graph" est le graphe maximal contenant l'ensemble des aretes $E$ telles que :\\
+$E \subseteq P \times P$ et $E=\{e_k=(P_i,P_j),k=1,\cdots ,n /\textrm{ la sphère minimal contenant }P_i$\\$\textrm{et }P_j\textrm{ ne contient aucun autre point}\}$.\\
+Le "Gabriel graph" est donc l'ensemble des aretes reliant deux points et dont la sphère minimale ne contient pas d'autres points.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type \texttt{vef\_model}.\\
+\texttt{retour} : un \texttt{vef\_model} contenant les sommets et les aretes du "Gabriel Graph".\\
+
+\textbullet \texttt{vef\_model* vef\_model\_extended\_gabriel\_hypergraph(vef\_model *m)}\\
+Calcul du "Extended Gabriel hypergraph" tel que défini dans \cite{AS2000}.\\
+\textbf{Définition du "Extended Gabriel hypergraph" :}\\
+Considérons le "Gabriel graph (GG)" (voir fonction correspondante) d'un nuage de point $P$. Le "Extended Gabriel hypergraph" est défini tel que :\\
+\begin{itemize}
+\item $\forall e_1,e_2 \in GG(P), e_1=(v_1,v_2)\textrm{ et }e_2=(v_2,v_3),$ si $v_1,v_2 \textrm{ et } v_3$ sont non alignés et que la sphère minimal de ces trois points ne contient aucun autre point, alors l'arete $(v_1,v_3)$ est ajouté aà l'"Extended Gabriel hypergraph".
+\item tout cycle de trois aretes dans l'"Extended Gabriel hypergraph" forme un triangle.
+\end{itemize}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type \texttt{vef\_model}.\\
+\texttt{retour} : un \texttt{vef\_model} contenant les sommets, les aretes et les faces du "Extended Gabriel hypergraph".\\
+
+
+\textbullet \texttt{vef\_model* vef\_model\_euclidean\_minimal\_spanning\_tree(vef\_model *m)}\\
+Calcul de l'arbre minimal couvrant avec la méthode Prim \cite{P1957}.\\
+\textbf{Définition du "Euclidean Minimal Spanning Tree" :}\\
+L'arbre minimal couvrant d'un graphe est le sous ensemble d'arete formant un arbre incluant toutes les aretes et donc la somme des poids des aretes est minimal.\\
+\textbf{Algorithme :} http://en.wikipedia.org/wiki/Prim\%27s\_algorithm\\
+\begin{verbatim}
+V désigne l'ensemble des sommets
+E désigne l'ensemble des aretes
+
+Choisir un sommet S arbitrairement
+Vnew={S}
+Enew={}
+TantQue Vnew!=V
+  choisir une arete(u,v) ayant le poids minimal telle que:
+    u appartient à Vnew
+    v n'appartient pas à Vnew
+  ajouter v à Vnew
+  ajouter (u,v) à Enew
+FinTantQue
+
+Vnew et Enew est l'arbre couvrant minimal
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type \texttt{vef\_model}.\\
+\texttt{retour} : un \texttt{vef\_model} contenant les sommets et les aretes du "Euclidean Minimal Spanning Tree".\\
+
+\bibliographystyle{unsrt}
+\bibliography{manuel}
+
+\end{document}

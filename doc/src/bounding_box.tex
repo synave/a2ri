@@ -1,0 +1,124 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque BOUNDINGBOX}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Dans cette bibliothèque sont implémentées des fonctions de calcul de différentes bounding container.\\
+
+\section{Fonctions}
+
+\textbullet \texttt{void vf\_model\_axis\_aligned\_bounding\_box(vf\_model m, int *faces, int nbfaces, point3d **ptmin, point3d **ptmax)}\\
+Calcule l'Axis Aligned Bounding Box (AABB) de toutes les faces de la liste \texttt{faces}. Les AABB sont stockées dans les variables \texttt{ptmin} (coin inférieur de l'AABB) et \texttt{ptmax} (coin supérieur de l'AABB).\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type vf\_model.\\
+\texttt{faces} : tableau d'entier contenant les numéros des faces pour lesquels on veut les boites englobantes.\\
+\texttt{nbfaces} : nombre de faces contenus dans le tableau.\\
+\texttt{ptmin} : liste de point3d contenant les points (xmin,ymin,zmin) des boites englobantes. A chaque face du tableau \texttt{faces} est associée un point3d.\\
+\texttt{ptmax} : liste de point3d contenant les points (xmax,ymax,zmax) des boites englobantes. A chaque face du tableau \texttt{faces} est associée un point3d.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_bounding\_ball\_glib(vf\_model m, int *faces, int nbfaces, point3d **listcentre, double **listradius)}\\
+Calcule la Bounding Ball ``exacte'' pour toutes les faces de la liste \texttt{faces}. Les centres des bounding ball sont stockés dans la variable \texttt{listcentre} et les rayons dans \texttt{lisradius}. Le centre de la sphère englobante est soit le centre du cercle circonsrit et comme rayon le rayon du ercle circonsrit si le triangle ne possède pas d'angle obtus. Dans le cas d'un triangle possédant un angle obtus, le centre de la sphère englobante est le milieu de l'hypoténuse et le rayon la demi longueur de l'hypoténuse \cite{C1885}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type vf\_model.\\
+\texttt{faces} : tableau d'entier contenant les numéros des faces pour lesquels on veut les boites englobantes.\\
+\texttt{nbfaces} : nombre de faces contenus dans le tableau.\\
+\texttt{listcentre} : liste de point3d contenant les centres des sphères englobantes. A chaque face du tableau \texttt{faces} est associée un point3d.\\
+\texttt{listradius} : liste de rayon des boites englobantes. A chaque face du tableau \texttt{faces} est associée un rayon.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_bounding\_ball\_ritter(vf\_model m, int *faces, int nbfaces, point3d **listcentre, double **listradius)}\\
+Calcule la Bounding Ball de Ritter \cite{R1990} pour toutes les faces de la liste \texttt{faces}. Les centres des bounding ball sont stockés dans la variable \texttt{listcentre} et les rayons dans \texttt{lisradius}.\\
+\textbf{Algorithme} pour calculer la bounding ball de centre $C$ et de rayon $r$ d'un ensemble de $n$ points ={$p_0,...,p_n$} (figure \ref{nuage_point}) :\\
+\begin{figure}
+\centering
+\includegraphics[width=9cm]{./images/nuage_de_points.eps}
+\caption{Nuage de points.}
+\label{nuage_point}
+\end{figure}
+1) Parcourir tous les points $p_k$ pour trouver la Bounding Box AABB de coin inférieur $ptmin$ et de coin supérieur $ptmax$.\\
+2) $C=\frac 1 2 \times (ptmin+ptmax)$. (figure \ref{nuage_points_bb})\\
+\begin{figure}
+\centering
+\includegraphics[width=9cm]{./images/nuage_de_points_bounding_box.eps}
+\caption{Le centre de la sphère est le centre de la bounding box du nuage de points.}
+\label{nuage_points_bb}
+\end{figure}
+3) $r=\max_{i\in {0..n}} \parallel C-p_i \parallel$ (figure \ref{nuage_points_sphere_ritter})\\
+\begin{figure}
+\centering
+\includegraphics[width=9cm]{./images/nuage_de_points_sphere_ritter.eps}
+\caption{Le rayon de la sphère est la distance maximale entre le centre et les points.}
+\label{nuage_points_sphere_ritter}
+\end{figure}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type vf\_model.\\
+\texttt{faces} : tableau d'entier contenant les numéros des faces pour lesquels on veut les boites englobantes.\\
+\texttt{nbfaces} : nombre de faces contenus dans le tableau.\\
+\texttt{listcentre} : liste de point3d contenant les centres des sphères englobantes. A chaque face du tableau \texttt{faces} est associée un point3d.\\
+\texttt{listradius} : liste de rayon des boites englobantes. A chaque face du tableau \texttt{faces} est associée un rayon.\\
+\texttt{retour} : aucun.\\
+
+
+
+\textbullet \texttt{void vf\_model\_oriented\_bounding\_box(vf\_model m, int *faces, int nbfaces, vector3d **newbasex, vector3d **newbasey, vector3d **newbasez, point3d **ptmin, point3d **ptmax)}\\
+Calcule l'Oriented Bounding Box (OBB) pour toutes les faces de la liste \texttt{faces}. Les OBB sont stockées dans les variables \texttt{ptmin} (coin inférieur de l'OBB) et \texttt{ptmax} (coin supérieur de l'OBB) et les bases dans lesquelles sont exprimées les coordonnées des OBB dans \texttt{newbasex,newbasey,newbasez} \cite{}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type vf\_model.\\
+\texttt{faces} : tableau d'entier contenant les numéros des faces pour lesquels on veut les boites englobantes.\\
+\texttt{nbfaces} : nombre de faces contenus dans le tableau.\\
+\texttt{newbasex} : vecteur X de la base dans laquelle est exprimée la bounding box.\\
+\texttt{newbasey} : vecteur Y de la base dans laquelle est exprimée la bounding box.\\
+\texttt{newbasez} : vecteur Z de la base dans laquelle est exprimée la bounding box.\\
+\texttt{ptmin} : liste de point3d contenant les points (xmin,ymin,zmin) des boites englobantes. A chaque face du tableau \texttt{faces} est associée un point3d.\\
+\texttt{ptmax} : liste de point3d contenant les points (xmax,ymax,zmax) des boites englobantes. A chaque face du tableau \texttt{faces} est associée un point3d.\\
+\texttt{retour} : aucun.\\
+
+
+
+\textbullet \texttt{void vef\_model\_bounding\_ball\_glib(vf\_model m, int *faces, int nbfaces, point3d **listcentre, double **listradius)}\\
+Calcule la Bounding Ball ``exacte'' pour toutes les faces de la liste \texttt{faces}. Les centres des bounding ball sont stockés dans la variable \texttt{listcentre} et les rayons dans \texttt{lisradius}. Le centre de la sphère englobante est soit le centre du cercle circonsrit et comme rayon le rayon du ercle circonsrit si le triangle ne possède pas d'angle obtus. Dans le cas d'un triangle possédant un angle obtus, le centre de la sphère englobante est le milieu de l'hypoténuse et le rayon la demi longueur de l'hypoténuse \cite{C1885}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle de type vef\_model.\\
+\texttt{faces} : tableau d'entier contenant les numéros des faces pour lesquels on veut les boites englobantes.\\
+\texttt{nbfaces} : nombre de faces contenus dans le tableau.\\
+\texttt{listcentre} : liste de point3d contenant les centres des sphères englobantes. A chaque face du tableau \texttt{faces} est associée un point3d.\\
+\texttt{listradius} : liste de rayon des boites englobantes. A chaque face du tableau \texttt{faces} est associée un rayon.\\
+\texttt{retour} : aucun.\\
+
+
+
+\textbullet \texttt{void point3d\_bounding\_ball\_glib(point3d *faces, int nbfaces, point3d **listcentre, double **listradius)}\\
+Calcule la Bounding Ball ``exacte'' pour toutes les faces de la liste \texttt{faces}. La liste \texttt{faces} est composé de point3d. Trois point3d définissent une face. Le nombre d'éléments de la liste \texttt{faces} est donc égale à trois fois \texttt{nbfaces}. Les centres des bounding ball sont stockés dans la variable \texttt{listcentre} et les rayons dans \texttt{lisradius}. Le centre de la sphère englobante est soit le centre du cercle circonsrit et comme rayon le rayon du ercle circonsrit si le triangle ne possède pas d'angle obtus. Dans le cas d'un triangle possédant un angle obtus, le centre de la sphère englobante est le milieu de l'hypoténuse et le rayon la demi longueur de l'hypoténuse \cite{C1885}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{faces} : tableau de point3d contenant les coordonnées des points des faces pour lesquels on veut les boites englobantes. Trois points forment une face : faces[0], faces[1] et faces[2] forment la première face. faces[3], faces[4] et faces[5] forment la seconde face etc.\\
+\texttt{nbfaces} : nombre de faces contenus dans le tableau. Le nombre de faces est égale au nombre d'éléments de \texttt{faces} divisé par trois.\\
+\texttt{listcentre} : liste de point3d contenant les centres des sphères englobantes. A chaque face du tableau \texttt{faces} est associée un point3d.\\
+\texttt{listradius} : liste de rayon des boites englobantes. A chaque face du tableau \texttt{faces} est associée un rayon.\\
+\texttt{retour} : aucun.\\
+
+
+
+\bibliographystyle{unsrt}
+\bibliography{manuel}
+
+\end{document}

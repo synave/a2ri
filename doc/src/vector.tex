@@ -1,0 +1,62 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque VECTOR}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Cette bibliothèque implémente une structure de vecteur 3D les fonctions associés pour les manipuler ainsi que des opérations comme la normalisation, le produit scalaire ou vectoriel.\\
+
+\section{Structures de données}
+
+Le vecteur 3D est une structure comportant trois rééls : la composante suivant X, la composante suivant Y et la composante suivant Z.\\
+\begin{verbatim}
+typedef struct
+{
+  double dx,dy,dz;
+}vector3d;
+\end{verbatim}
+
+\section{Fonctions}
+
+
+\textbullet void vector3d\_init(vector3d *v, double dx, double dy, double dz)\\
+Initialisation d'un vecteur 3D avec trois rééls.\\
+
+
+\textbullet void vector3d\_display(vector3d v)\\
+Affichage d'un vecteur 3D.\\
+
+
+\textbullet double vector3d\_size(vector3d v)\\
+Calcul de la taille d'un vecteur 3D.\\
+
+
+\textbullet int vector3d\_equal(vector3d v1, vector3d v2)\\
+Retourne 1 si les composantes des deux vecteurs sont égales une à une.\\
+
+
+\textbullet void vector3d\_normalize(vector3d *v)\\
+Normalisation du vecteur 3D. Chaque composante est divisée par la taille du vecteur 3D.\\
+
+
+\textbullet double vector3d\_scalarproduct(vector3d v1, vector3d v2)\\
+Calcul du produit scalaire de deux vecteurs 3D.\\
+
+
+\textbullet vector3d vector3d\_vectorialproduct(vector3d v1, vector3d v2)\\
+Calcul du produit vectoriel de deux vecteurs 3D.\\
+
+
+\textbullet void vector3d\_reverse(vector3d *v)\\
+Inversion du vecteur 3D. Chaque composante est multiplié par -1.\\
+
+\end{document}

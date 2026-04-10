@@ -1,0 +1,33 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque TOPOLOGY}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Des fonctions permettant des opérations topologiques sur les maillages sont implémentées dans cette bibliothèque.\\
+
+\section{Fonctions}
+
+\textbullet void vf\_model\_star(int type, vf\_model m, int *faces, int nbfaces, int **list, int *size, int depth)\\
+Recherche du voisinage à partir d'une liste d'index de faces, le tableau \textit{faces} et en spécifiant la profondeur \textit{depth}.\\
+Il est possible de demander le voisinage par arêtes (\textit{type==BYEDGE}) ou par sommet (\textit{type==BYVERTEX}). La liste des faces appartenant au voisinage est stockée dans \textit{list}.\\
+
+
+\textbullet int vf\_model\_nb\_hole(vf\_model *m)\\
+Retourne le nombre de trou dans le maillage.\\
+Le nombre de trou est égale au nombre de bords fermés.\\
+
+
+\textbullet int vf\_model\_nb\_connected\_part(vf\_model *m, int **list)\\
+Retourne le nombre de parties connexes contenu dans le maillage. Le paramètre \textit{list} contient le numéro de la partie de la face du même index.\\
+
+\end{document}

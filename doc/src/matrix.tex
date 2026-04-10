@@ -1,0 +1,123 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque MATRIX}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Cette bibliothèque permet la manipulation de matrice et d'effectuer différents calculs comme le calcul du déterminant, l'addition, la soustraction ou la multiplication de deux matrices.\\
+Cette bibliothèque utilise les matrices définies dans la bibliothèque GSL (http://www.gnu.org/software/gsl/).\\
+Il faudra donc installer GSL avant d'utiliser cette bibliothèque.
+
+\section{Fonctions}
+
+\textbullet \texttt{double matrix\_determinant(gsl\_matrix *m)}\\
+Calcul du déterminant d'une matrice.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : matrice dont on cherche le déterminant.\\
+\texttt{retour} : déterminant de la matrice.\\
+
+
+\textbullet \texttt{double matrix\_frobenius\_norm(gsl\_matrix *m)}\\
+Calcul de la norme de frobenius (aussi appelée norme euclidienne) d'une matrice. La norme de frobenius d'une matrice $A$ est notée : $||A||_F\\$
+\textbf{Formule :} (http://mathworld.wolfram.com/FrobeniusNorm.html)\\
+La norme de frobenius est la racine carrée de la somme des éléments au carrés.\\
+Calcul de la norme de frobenius d'un matrice $A$ de $m$ lignes et $n$ colonnes.\\
+$$||A||_F=\sqrt{\sum_{i=0}^m \sum_{j=0}^n a_{ij}^2}$$
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : matrice dont on cherche la norme de Frobenius.\\
+\texttt{retour} : norme de Frobenius.\\
+
+
+
+\textbullet \texttt{gsl\_matrix* matrix\_add(gsl\_matrix *A, gsl\_matrix *B)}\\
+Addition de deux matrices. Attention aux tailles des matrices qui doivent être compatibles avec le calcul.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{A} : première matrice.\\
+\texttt{B} : seconde matrice.\\
+\texttt{retour} : Nouvelle matrice contenant l'addition de A et B.\\
+
+
+\textbullet \texttt{gsl\_matrix* matrix\_sub(gsl\_matrix *A, gsl\_matrix *B)}\\
+Soustraction de deux matrices. Attention aux tailles des matrices qui doivent être compatibles avec le calcul.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{A} : première matrice.\\
+\texttt{B} : seconde matrice.\\
+\texttt{retour} : Nouvelle matrice contenant la soustraction de A et B.\\
+
+
+\textbullet \texttt{gsl\_matrix* matrix\_mul\_scale(gsl\_matrix *A, double n)}\\
+Multiplication d'une matrice par un scalaire.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{A} : la matrice à multiplier.\\
+\texttt{n} : le scalaire.\\
+\texttt{retour} : Nouvelle matrice contenant la matrice multiplié par le scalaire.\\
+
+
+\textbullet \texttt{gsl\_matrix* matrix\_mul(gsl\_matrix *A, gsl\_matrix *B)}\\
+Multiplication de deux matrices. Attention aux tailles des matrices qui doivent être compatibles avec le calcul.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{A} : première matrice.\\
+\texttt{B} : seconde matrice.\\
+\texttt{retour} : Nouvelle matrice contenant la multiplication de A et B.\\
+
+
+\textbullet \texttt{gsl\_matrix* matrix\_inverse(gsl\_matrix *m)}\\
+Calcul de l'inverse d'une matrice.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : la matrice.\\
+\texttt{retour} : Nouvelle matrice contenant l'inverse de m.\\
+
+
+\textbullet \texttt{void matrix\_display(gsl\_matrix *m)}\\
+Affichage d'une matrice.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : la matrice.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{gsl\_matrix* matrix\_init(double *data, int nbline, int nbcol)}\\
+Initialisation d'une matrice à l'aide d'un tableau de rééls.\\
+\textbf{Exemple d'utilisation :}
+\begin{verbatim}
+data = {1 2 3 4 5 6}
+nbline = 3
+nbcol = 2
+
+          (1 2)
+matrice = (3 4)
+          (5 6)
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{data} : données pour remplir la matrice.\\
+\texttt{nbline} : Nombre de lignes.\\
+\texttt{nbcol} : Nombre de colonnes\\
+\texttt{retour} : Nouvelle matrice contenant les données du tableau data dans \texttt{nbline} lignes et \texttt{nbcol} colonnes.\\
+
+
+\textbullet \texttt{gsl\_matrix* matrix\_transpose(gsl\_matrix *m)}\\
+Calcul de la transposé d'une matrice.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : la matrice.\\
+\texttt{retour} : Nouvelle matrice contenant la transpose de m.\\
+
+
+\end{document}

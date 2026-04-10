@@ -1,0 +1,259 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{times}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque GEOMETRY}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Cette bibliothèque implémente des calculs géométriques sur les points, vecteurs, triangles etc.
+
+\section{Fonctions}
+
+\textbullet \texttt{double point3d\_length(point3d p1, point3d p2)}\\
+Calcul de la longueur entre deux \texttt{point3d}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p1} : premier point.\\
+\texttt{p2} : second point.\\
+\texttt{retour} : longueur entre les deux points.\\
+
+
+\textbullet \texttt{double point3d\_square\_length(point3d p1, point3d p2)}\\
+Calcul de la longueur au carré entre deux \texttt{point3d}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p1} : premier point.\\
+\texttt{p2} : second point.\\
+\texttt{retour} : longueur au carré entre les deux points.\\
+
+
+\textbullet \texttt{double point2d\_length(point2d p1, point2d p2)}\\
+Calcul de la longueur entre deux \texttt{point2d}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p1} : premier point.\\
+\texttt{p2} : second point.\\
+\texttt{retour} : longueur entre les deux points.\\
+
+
+\textbullet \texttt{void equation\_plan(point3d *p, int size, double *aeq, double *beq, double *ceq, double *deq)}\\
+Calcul de l'équation d'un plan définit par un ensemble de points en utilisant la mèthode du plan des moindres carrés.\\
+Cette méthode, calculant l'équation d'un plan moyen, n'est pas exacte sauf dans le cas où le nombre de points passé à la fonction est de trois.\\
+\textbf{Algortihme} (http://www.a525g.com/mathematiques/moindres-carres.php) :\\
+Soit un ensemble de \texttt{size} points \texttt{p}.\\
+Nous cherchons \texttt{aeq,beq,c,eq,deq} tel que :\\
+$$aeq \times x+beq \times y+ceq \times z+deq=0$$\\
+$aeq=\sum_{i=0}^{size-1}(y_i-y_{(i+1) \% size})\times(z_i-z_{(i+1) \% size})$\\
+$beq=\sum_{i=0}^{size-1}(z_i-z_{(i+1) \% size})\times(x_i-x_{(i+1) \% size})$\\
+$ceq=\sum_{i=0}^{size-1}(x_i-x_{(i+1) \% size})\times(y_i-y_{(i+1) \% size})$\\
+$x_{av} = \frac {\sum_{i=0}^{size-1} x_i} {size}$\\
+$y_{av} = \frac {\sum_{i=0}^{size-1} y_i} {size}$\\
+$z_{av} = \frac {\sum_{i=0}^{size-1} z_i} {size}$\\
+$deq=-\begin{pmatrix} x_{av}&y_{av}&z_{av}\end{pmatrix} \times \begin{pmatrix} a&b&c\end{pmatrix}^T$\\
+avec $\%$ l'opérateur modulo.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p} : liste de point pour lesquels on veut calculer le plan moyen.\\
+\texttt{size} : nombre de point du tableau.\\
+\texttt{aeq} : paramètre a de l'équation de plan.\\
+\texttt{beq} : paramètre b de l'équation de plan.\\
+\texttt{ceq} : paramètre c de l'équation de plan.\\
+\texttt{deq} : paramètre d de l'équation de plan.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void plan\_lms\_contraint(point3d A, point3d B, point3d *listept, int size, point3d *C)}\\
+Calcule le plan moyen de la liste de points \texttt{listept} passant par les deux points \texttt{A} et \texttt{B}. Les points \texttt{A} et \texttt{B} sont fixés. L'algorithme calcule le point \texttt{C} pour former le plan.
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{A} : premier point - le plan est contraint à passer par celui-ci.\\
+\texttt{B} : second point - le plan est contraint à passer par celui-ci.\\
+\texttt{listept} : liste de point servant à calculer le troisieme point du plan.\\
+\texttt{size} : nombre de point de la liste.\\
+\texttt{C} : troisième point calculé formant le plan.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{double point3d\_area(point3d p1, point3d p2, point3d p3)}\\
+Calcul de l'aire du triangle défini par les trois \texttt{point3d}.\\
+\textbf{Formule pour le calcul de l'aire d'une triangle ABC :}\\
+$$Aire=\frac {||\overrightarrow{AB}\otimes\overrightarrow{AC}||} 2$$\\
+avec $||\overrightarrow{U}||$ la norme du vecteur $\overrightarrow{U}$.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p1} : premier point du triangle.\\
+\texttt{p2} : second point du triangle.\\
+\texttt{p3} : troisieme point du triangle.\\
+\texttt{retour} : aire du triangle défini par les trois points.\\
+
+
+\textbullet \texttt{void base\_modification\_3d\_to\_2d(point3d p, point3d origin, vector3d base1, vector3d base2, point2d *newp)}\\
+Changement de base du \texttt{point3d p} vers une base d'origine le \texttt{point3d origin} et de vecteur unitaire (\texttt{base1,base2}). Le nouveau point est un \texttt{point2d} exprimé dans la nouvelle base.\\
+\textbf{Exemple :}\\
+\texttt{point3d} de départ : \texttt{p}=(2,1,5)\\
+Nouvelle base : \texttt{origin}=(1,1,1), \texttt{base1}=(1,0,0), \texttt{base2}=(0,0,1)\\
+\texttt{point2d} trouvé : \texttt{newp}=(1,4).\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p} : point que l'on veut changer de base.\\
+\texttt{origin} : origine de la nouvelle base.\\
+\texttt{base1} : premier vecteur de la base.\\
+\texttt{base2} : second vecteur de la base.\\
+\texttt{newp} : point dans la nouvelle base.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void find\_second\_base\_vector(vector3d AB, vector3d AC, vector3d *U)}\\
+Trouve le second \texttt{vector3d} normal à \texttt{AB} et contenu dans le même plan que (\texttt{AB},\texttt{AC}).\\
+\textbf{Algorithme :}\\
+Le produit vectoriel ($\overrightarrow{AB}$,$\overrightarrow{AC}$) nous donne un vecteur $\overrightarrow{W}$ normal au plan formé par ($\overrightarrow{AB}$,$\overrightarrow{AC}$).\\
+Un second produit vectoriel ($\overrightarrow{W}$,$\overrightarrow{AB}$) nous donne le vecteur normal au plan formé par ($\overrightarrow{W}$,$\overrightarrow{AB}$) et donc le vecteur recherché.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{AB} : Premier vecteur de la base.\\
+\texttt{AC} : Second vecteur formant un plan avec AB.\\
+\texttt{U} : Vecteur calculé contenu dans le plan ABC et normal à AB.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int point\_in\_triangle(point3d M, point3d A, point3d B, point3d C)}\\
+Vérifie si un \texttt{point3d M} se trouve à l'intérieur du triangle ABC.\\
+\textbf{Algorithme :}\\
+si $\widehat{AMB}+\widehat{BMC}+\widehat{CMA}==360$ alors le point est à l'intérieur du triangle (voir figure \ref{point_dans_triangle} et \ref{point_non_dans_triangle}).\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=8cm]{./images/point_dans_triangle.eps}
+\caption{Le point \texttt{M} est dans le triangle ABC -> somme des angles = 360}
+\label{point_dans_triangle}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=8cm]{./images/point_non_dans_triangle.eps}
+\caption{Le point \texttt{M} n'est pas dans le triangle ABC -> somme des angles = 0}
+\label{point_non_dans_triangle}
+\end{figure}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{M} : point à tester.\\
+\texttt{A} : premier point du triangle.\\
+\texttt{B} : second point du triangle.\\
+\texttt{C} : troisieme point du triangle.\\
+\texttt{retour} : 1 si le point M est contenu dans le triangle ABC, 0 sinon.\\
+
+\textbullet \texttt{double vector3d\_angle\_radian(vector3d v1, vector3d v2)}\\
+Calcule l'angle en radian entre les deux \texttt{vector3d v1} et \texttt{v2}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{v1} : premier vecteur.\\
+\texttt{v2} : second vecteur.\\
+\texttt{retour} : angle formé par les deux vecteurs en radian.\\
+
+
+\textbullet \texttt{double vector3d\_angle\_degre(vector3d v1, vector3d v2)}\\
+Calcule l'angle en degré entre les deux \texttt{vector3d v1} et \texttt{v2}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{v1} : premier vecteur.\\
+\texttt{v2} : second vecteur.\\
+\texttt{retour} : angle formé par les deux vecteurs en degré.\\
+
+
+\textbullet \texttt{point3d incircle\_center(point3d A, point3d B, point3d C)}\\
+Calcul du centre du cercle inscrit au triangle ABC.\\
+\textbf{Formule :}(http://en.wikipedia.org/wiki/Incircle)\\
+Soit le triangle ABC défini par les trois points :$ A (x_a,y_a,z_a)$, $B (x_b,y_b,z_b)$ et $C (x_c,y_c,z_c)$. (voir figure \ref{cercle_inscrit})\\
+Le centre $(x_{centre},y_{centre},z_{centre})$ du cercle inscrit au triangle ABC est :\\
+$x_{centre}=\frac {a \times x_a+b \times x_b+c \times x_c} {a+b+c}$\\
+$y_{centre}=\frac {a \times y_a+b \times y_b+c \times y_c} {a+b+c}$\\
+$z_{centre}=\frac {a \times z_a+b \times z_b+c \times z_c} {a+b+c}$\\
+avec $a=||\overrightarrow{BC}||$, $b=||\overrightarrow{AC}||$ et $c=||\overrightarrow{AB}||$.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=10cm]{./images/cercle_inscrit.eps}
+\caption{Calcul du centre du cercle insrit au triangle.}
+\label{cercle_inscrit}
+\end{figure}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{A} : premier point du triangle.\\
+\texttt{B} : second point du triangle.\\
+\texttt{C} : troisème point du triangle.\\
+\texttt{retour} : point contenant le centre du cercle inscrit au triangle.\\
+
+
+\textbullet \texttt{point3d circumcircle\_center(point3d A, point3d B, point3d C)}\\
+Calcul du centre du cercle circonscrit du triangle ABC.\\
+\textbf{Formule : (livre 3D Math Pimer for Graphics and Game Development)}\\
+Soit : \\
+$\overrightarrow{e_1}=\overrightarrow{BC}$\\
+$\overrightarrow{e_2}=\overrightarrow{CA}$\\
+$\overrightarrow{e_3}=\overrightarrow{AB}$\\
+~\\
+$d_1=-\overrightarrow{e_2}.\overrightarrow{e_3}$\\
+$d_2=-\overrightarrow{e_3}.\overrightarrow{e_1}$\\
+$d_3=-\overrightarrow{e_1}.\overrightarrow{e_2}$\\
+~\\
+$c_1=d_2*d_3$\\
+$c_2=d_3*d_1$\\
+$c_3=d_1*d_2$\\
+$c=c_1+c_2+c_3$\\
+~\\
+$circumcircle\_center=\frac{c_2+c_3}{2\times c}A+\frac{c_3+c_1}{2\times c}B+\frac{c_1+c_2}{2\times c}C$\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{A} : premier point du triangle.\\
+\texttt{B} : second point du triangle.\\
+\texttt{C} : troisème point du triangle.\\
+\texttt{retour} : point contenant le centre du cercle circonscrit au triangle.\\
+
+\textbullet \texttt{double distance\_point\_straight\_line(point3d M, point3d A, point3d B)}\\
+Calcul de la distance entre un point M et la \underline{\textbf{droite}} (AB) (voir figure \ref{distance_point_ligne}).\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=10cm]{./images/distance_point_ligne.eps}
+\caption{La distance entre M et (AB) est de d et la distance entre M' et (AB) est de d'.}
+\label{distance_point_ligne}
+\end{figure}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{M} : point M dont on veut connaitre la distance à la droite (AB).\\
+\texttt{A} : premier point définissant la ligne.\\
+\texttt{B} : second point définissant la ligne.\\
+\texttt{retour} : distance entre M et la droite (AB).\\
+
+
+\textbullet \texttt{double distance\_point\_plane(point3d M, point3d A, point3d B, point3d C)}\\
+Calcul de la distance entre un point M et le plan défini par les trois points A,B et C.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{M} : point M dont on veut connaitre la distance au plan.\\
+\texttt{A} : premier point définissant le plan.\\
+\texttt{B} : second point définissant le plan.\\
+\texttt{C} : troisième point définissant le plan.\\
+\texttt{retour} : distance entre M et le plan.\\
+
+
+\textbullet \texttt{void sample\_triangle(point3d A, point3d B, point3d C, int nb\_sample, point3d **list)}\\
+Echantillonnage du triangle ABC.\\
+Le nombre d'échantillons voulu est passé en paramètre et la liste d'échantillons est stockée dans \texttt{list}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{A} : premier point du triangle.\\
+\texttt{B} : second point du triangle.\\
+\texttt{C} : troisième point du triangle.\\
+\texttt{nb\_sample} : nombre d'échantillons souhaités.\\
+\texttt{list} : liste d'échantillons.\\
+\texttt{retour} : aucun.\\
+
+
+\end{document}

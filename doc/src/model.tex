@@ -1,0 +1,1149 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque MODEL}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+
+Cette bibliothèque permet de gérer, ouvrir et sauver des maillages représentés par un nuage de points et un ensemble de faces. Elle contient les structures de données \texttt{vf\_model} et \texttt{vef\_model} dans lesquelles sont stockées les maillages.\\
+Des fonctions permettant d'initialiser un nouveau maillage, d'ouvrir un modèle et d'enregistrer dans un fichier sont accessibles à partir de cette bibliothèque. Il est également possible d'ajouter des sommets, des arêtes et des faces en fonction du type de structures de données utilisé.\\
+Toutes les fonctions implémentées pour une structure de données l'est pour toutes les structures de données.\\
+\\
+Pour avoir accès à ces structures de données il faut inclure le fichier d'en-tete ``model.h'' :\\
+\begin{verbatim}
+#include ``model.h''
+\end{verbatim}
+
+\section{Structures de données}
+
+La première structure de données est \texttt{vf\_model}. Le maillage stocké contient une liste de sommets \texttt{ve} de \texttt{vf\_vertex} et une liste de faces \texttt{fa} de (\texttt{vf\_face}. Les arêtes ne sont donc pas explicitement stockées mais peuvent être retrouvées au moyen d'une table de hachage.\\
+Les variables \texttt{xmin,ymin,zmin} et \texttt{xmax,ymax,zmax} permettent de stocker la bounding box générale du maillage.\\
+\begin{verbatim}
+typedef struct
+{
+  vf_vertex *ve; //liste des sommets
+  vf_face *fa; //lsite des faces
+  int nbvertex; //nombre de sommets
+  int nbface; //nombre de faces
+  double xmin,ymin,zmin,xmax,ymax,zmax; //bounding box du maillage
+}vf_model;
+\end{verbatim}
+
+La structure de données \texttt{vef\_model} permet les mêmes opérations que \texttt{vf\_model}. Elle contient une liste de sommets \texttt{ve} de \texttt{vef\_vertex}, une liste d'arêtes \texttt{ed} de \texttt{vef\_edge} et une liste de faces \texttt{fa} de \texttt{vef\_face}.\\
+Les variables \texttt{xmin,ymin,zmin} et \texttt{xmax,ymax,zmax} permettent de stocker la bounding box générale du maillage.\\
+\begin{verbatim}
+typedef struct
+{
+  vef_vertex *ve; //liste de sommets
+  vef_edge *ed; //liste d'arêtes
+  vef_face *fa; //liste de faces
+  int nbvertex; //nombre de sommets
+  int nbedge; //nombre d'arêtes
+  int nbface; //nombre de faces
+  double xmin,ymin,zmin,xmax,ymax,zmax; //bounding box du maillage
+}vef_model;
+\end{verbatim}
+
+
+\section{Fonctions}
+\subsection{fonctions utilisant \texttt{vf\_model}}
+
+\textbullet \texttt{void vf\_model\_init(vf\_model *m)}\\
+Initialisation d'un modèle avec un maillage vide.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_free(vf\_model *m)}\\
+Libération de l'espace mémoire utilisé.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+\textbullet \texttt{void vf\_model\_display(vf\_model m)}\\
+Affichage du nombre de sommets et du nombre de faces du modèle ainsi que la bounding box.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_display\_detail(vf\_model m)}\\
+Affichage du nombre de sommets, leurs coordonnées et leur valence et la liste des sommets adjacents.\\
+Affichage du nombre de faces ainsi que les trois points les définissant et leur type.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_update\_num\_edge(vf\_edge *e, vf\_model *m, hashtable *table)}\\
+Fonction pouvant etre passé en paramètre lors de la contruction de la table de hachage contenant les aretes du modèle.\\
+Cette fonction mettra à jour les aretes en leur attribuant un numéro unique.\\
+\textbf{Utilisation : }\\
+\begin{verbatim}
+ptf_func_hashtable func[1];
+func[0]=vf_model_update_num_edge;
+
+hashtable *table=vf_model_construction_edge_table(m,func,1);
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{e} : la \texttt{vf\_edge} qui sera mis à jour.\\
+\texttt{m} : le modèle.\\
+\texttt{table} : la table de hachage.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_update\_length\_edge(vf\_edge *e, vf\_model *m, hashtable *table)}\\
+Fonction pouvant etre passé en paramètre lors de la contruction de la table de hachage contenant les aretes du modèle.\\
+Cette fonction mettra à jour les longueurs des aretes.\\
+\textbf{Utilisation : }\\
+\begin{verbatim}
+ptf_func_hashtable func[1];
+func[0]=vf_model_update_length_edge;
+
+hashtable *table=vf_model_construction_edge_table(m,func,1);
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{e} : la \texttt{vf\_edge} qui sera mis à jour.\\
+\texttt{m} : le modèle.\\
+\texttt{table} : la table de hachage.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{hashtable* vf\_model\_construction\_edge\_table(vf\_model *m, ptf\_func\_hashtable *func, int nbfunc)}\\
+Construction de la table de hachage stockant les arete du modèle.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{func} : tableau de pointeur de fonction qui seront appliquées aux aretes.\\
+\texttt{nbfunc} : taille du tableau.\\
+\texttt{retour} : la table de hachage.\\
+
+
+\textbullet \texttt{void vf\_model\_destroy\_edge\_table(hashtable *table)}\\
+Destruction de la table de hachage stockant les arete du modèle.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{table} : la table de hachage.\\
+\texttt{retour} : aucun.\\
+
+
+
+\textbullet \texttt{int vf\_model\_open\_file(char* file, vf\_model *m)}\\
+Ouverture d'un fichier contenant un modèle.\\
+Les types de fichiers reconnus sont :pgn, wrl, off, ply, vef, obj.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_load\_vef(char *file, vf\_model *m)}\\
+Ouverture d'un fichier vef.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+\textbullet \texttt{int vf\_model\_load\_gts(char *file, vf\_model *m)}\\
+Ouverture d'un fichier gts.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_load\_pgn(char *file, vf\_model *m)}\\
+Ouverture d'un fichier pgn.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_load\_off(char *file, vf\_model *m)}\\
+Ouverture d'un fichier off.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_load\_ply(char *file, vf\_model *m)}\\
+Ouverture d'un fichier ply.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_load\_wrl(char *file, vf\_model *m)}\\
+Ouverture d'un fichier wrl.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_load\_obj(char *file, vf\_model *m)}\\
+Ouverture d'un fichier obj.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+\textbullet \texttt{int vf\_model\_load\_tet(char *file, vf\_model *m)}\\
+Ouverture d'un fichier tet.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_save\_file(char* file, vf\_model m)}\\
+Sauvegarde d'un maillage dans un fichier.\\
+Les types de fichiers supportés pour la sauvegarde sont : pgn, wrl, off, ply, vef, obj.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_save\_vef(char *file, vf\_model m)}\\
+Sauvegarde d'un maillage dans un fichier vef.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_save\_gts(char *file, vf\_model m)}\\
+Sauvegarde d'un maillage dans un fichier gts.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_save\_pgn(char *file, vf\_model m)}\\
+Sauvegarde d'un maillage dans un fichier pgn.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_save\_off(char *file, vf\_model m)}\\
+Sauvegarde d'un lmaillage dans un fichier off.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_save\_ply(char *file, vf\_model m)}\\
+Sauvegarde d'un maillage dans un fichier ply.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_save\_wrl(char *file, vf\_model m)}\\
+Sauvegarde d'un maillage dans un fichier wrl.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_save\_obj(char *file, vf\_model m)}\\
+Sauvegarde d'un maillage dans un fichier obj.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_add\_vertex(vf\_model *m, double x, double y, double z)}\\
+Ajout d'un sommet au maillage.\\
+Le tableau de \texttt{vf\_vertex} contenant les coordonnées sera agrandi, le compteur de sommet \texttt{m->nbvertex} est incrémenté automatiquement.\\
+Le sommet est initialisé avec les paramètres et la liste des adjacences du sommet est initialisée à NULL.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{x} : coordonnées en X du nouveau sommet.\\
+\texttt{y} : coordonnées en Y du nouveau sommet.\\
+\texttt{z} : coordonnées en Z du nouveau sommet.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_search\_vertex(vf\_model m, double x, double y, double z)}\\
+Recherche d'un sommet dans le modèle. L'index dans le tableau des sommets est retourné. Si le sommet n'est pas trouvé, on retourne -1.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{x} : coordonnées en X du nouveau sommet.\\
+\texttt{y} : coordonnées en Y du nouveau sommet.\\
+\texttt{z} : coordonnées en Z du nouveau sommet.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_remove\_vertex(vf\_model *m, int numvertex)}\\
+Suppression d'un sommet du modèle.\\
+Si le sommet est utilisé dans des faces ou polyhèdres, ces faces et polyhèdres sont d'abord supprimés.
+Le tableau des sommets est ensuite mis à jour en décalant tous les sommets dont l'index est supérieurs à celui supprimé et l'espace est réalloué. Toutes les faces et polyhèdres sont ensuites mises à jour pour prendre en compte le décalage d'index.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{numvertex} : numéro du sommet à supprimer.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_remove\_list\_of\_vertex(vf\_model *m, int *listvertex, int sizelist)}\\
+Suppression d'une liste de sommet du modèle.\\
+Si les sommets sont utilisés dans des faces ou polyhèdres, ces faces et polyhèdres sont d'abord supprimés.
+Le tableau des sommets est ensuite mis à jour en décalant tous les sommets dont l'index est supérieurs à celui supprimé et l'espace est réalloué. Toutes les faces et polyhèdres sont ensuites mises à jour pour prendre en compte le décalage d'index.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{listvertex} : liste des numéros de sommets à supprimer.\\
+\texttt{sizelist} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_add\_face(vf\_model *m, int ve1, int ve2, int ve3)}\\
+Ajout d'une face au maillage.\\
+Le tableau des faces sera agrandi automatiquement et le compteur de faces \texttt{m->nbface} sera incrémenté automatiquement. La liste des adjacences des trois sommets sera mis à jour automatiquement.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{ve1} : numéro du premier sommet.\\
+\texttt{ve2} : numéro du second sommet.\\
+\texttt{ve3} : numéro du troisième sommet.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_search\_face(vf\_model m, int ve1, int ve2, int ve3)}\\
+Recherche d'une face dans un maillage. L'index de la face dans le tableau des faces sera renvoyé si la face est trouvée. on retournera -1 si la face n'existe pas.\\
+Les faces sont orientés donc la face (0,5,9) et (0,9,5) sont différentes. Si la première est trouvée, la seconde ne le sera pas. \textbf{L'ordre des sommets est donc important !}\\
+\textbf{Exemple : }\\
+liste de faces (index -> ve1 ve2 ve3):
+\begin{verbatim}
+0 -> 0 1 2
+1 -> 0 2 3 
+2 -> 0 3 1
+3 -> 1 3 2
+\end{verbatim}
+le code
+\begin{verbatim}
+vf_model_search_face(m,0,3,1);
+ou
+vf_model_search_face(m,3,1,0);
+ou
+vf_model_search_face(m,1,0,3);
+\end{verbatim}
+retournera 2 alors que
+\begin{verbatim}
+vef_model_search_face(m,3,0,1);
+\end{verbatim}
+retournera -1\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{ve1} : numéro du premier sommet.\\
+\texttt{ve2} : numéro du second sommet.\\
+\texttt{ve3} : numéro du troisième sommet.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_remove\_face(vf\_model *m, int numface)}\\
+Suppression d'une face dans le maillage.\\
+Si la face est utilisée dans des polyhèdres, les polyhèdres sont d'abrod supprimés.\\
+Le tableau des faces sera automatiquement mis à jour en décalant les faces dont l'index est supérieur à la face à supprimer. De plus, les sommets inutilisés après la suppression de la face seront supprimés eux aussi.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{numface} : numéro de la face à supprimer.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_remove\_list\_of\_face(vf\_model *m, int *listface, int sizelist)}\\
+Suppression d'une liste de faces dans le maillage.\\
+Si les faces sont utilisées dans des polyhèdres, les polyhèdres sont d'abrod supprimés.\\
+Le tableau des faces sera automatiquement mis à jour en décalant les faces dont l'index est supérieur à la face à supprimer. De plus, les sommets inutilisés après la suppression de la face seront supprimés eux aussi.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{listface} : liste de numéro de face à supprimer.\\
+\texttt{sizelist} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_add\_polyhedron(vf\_model *m, int fa1, int fa2, int fa3, int fa4)}\\
+Ajout d'un polyhèdre au maillage.\\
+Le tableau des polyhèdres sera agrandi automatiquement et le compteur de polyhèdres \texttt{m->nbpolyhedron} sera incrémenté automatiquement. La liste des adjacences des quatres faces sera mis à jour automatiquement.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{fa1} : numéro de la première face.\\
+\texttt{fa2} : numéro de la seconde sommet face.\\
+\texttt{fa3} : numéro de la troisième sommet face.\\
+\texttt{fa4} : numéro de la quatrième face.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_search\_polyhedron(vf\_model m, int fa1, int fa2, int fa3, int fa4)}\\
+Recherche d'un polyhèdre dans un modèle. L'index du polyhèdre dans le tableau des polyhèdres sera renvoyé si le polyhèdre est trouvé. On retournera -1 si le polyhèdre n'existe pas.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{fa1} : numéro de la première face.\\
+\texttt{fa2} : numéro de la seconde sommet face.\\
+\texttt{fa3} : numéro de la troisième sommet face.\\
+\texttt{fa4} : numéro de la quatrième face.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_remove\_polyhedron(vf\_model *m, int numpolyhedron)}\\
+Suppression d'un polyhèdre dans un modèle.\\
+Le tableau des polyhèdres sera automatiquement mis à jour en décalant les polyhèdres dont l'index est supérieur à la face à supprimer. De plus, les sommets et faces inutilisés après la suppression du polyhèdre seront supprimés eux aussi.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{numpolyhedron} : numéro du polyhèdre à supprimer.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vf\_model\_remove\_list\_of\_polyhedron(vf\_model *m, int *listpolyhedron, int sizelist)}\\
+Suppression d'une liste de polyhèdres dans le modèle.\\
+Le tableau des polyhdères sera automatiquement mis à jour en décalant les polyhèdres dont l'index est supérieur au polyhèdre à supprimer. De plus, les sommets et faces inutilisés après la suppression de la face seront supprimés eux aussi.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{listpolyhedron} : liste de numéro de polyhèdres à supprimer.\\
+\texttt{sizelist} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_translate(vf\_model *m, vector3d delta)}\\
+Translation du maillage. La translation est défini par le vecteur3d passé en paramètre.\\
+La translation de tout le maillage se fait en faisant la translation du même vecteur de tous les sommets.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{delta} : vecteur de translation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateX\_radian(vf\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe X d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateX\_degre(vf\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe X d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateX\_radian\_center(vf\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe X autour du point passé en paramètre d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateX\_degre\_center(vf\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe X d'un angle en radian d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateY\_radian(vf\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe Y d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateY\_degre(vf\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe Y d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateY\_radian\_center(vf\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe Y autour du point passé en paramètre d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateY\_degre\_center(vf\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe Y d'un angle en radian d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateZ\_radian(vf\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe Z d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateZ\_degre(vf\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe Z d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateZ\_radian\_center(vf\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe Z autour du point passé en paramètre d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_rotateZ\_degre\_center(vf\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe Z d'un angle en radian d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{double vf\_model\_area\_model(vf\_model *m)}\\
+Calcule l'aire du modèle en faisant la somme des aires des faces.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : surface totale du modèle.\\
+
+
+
+\subsection{fonctions utilisant \texttt{vef\_model}}
+
+\textbullet \texttt{void vef\_model\_init(vef\_model *m)}\\
+Initialisation d'un modèle avec un maillage vide.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_free(vef\_model *m)}\\
+Libération de l'espace mémoire utilisé.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+\textbullet \texttt{void vef\_model\_display(vef\_model m)}\\
+Affichage du nombre de sommets, du nombre d'arêtes et du nombre de faces du modèle ainsi que la bounding box.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_display\_detail(vef\_model m)}\\
+Affichage du nombre de sommets, leurs coordonnées et leur valence et la liste des arêtes partant de ce sommet.\\
+Affichage du nombre d'arêtes, des deux sommets les définissant et du nombre de faces partagées par cette arête. La lsite de ces faces est ensuite affichée.\\
+Affichage du nombre de faces ainsi que les trois arêtes les définissant et leur type.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_open\_file(char* file, vef\_model *m)}\\
+Ouverture d'un fichier contenant un modèle.\\
+Les types de fichiers reconnus sont :pgn, wrl, off, ply, vef, obj.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_load\_vef(char *file, vef\_model *m)}\\
+Ouverture d'un fichier vef.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_load\_gts(char *file, vef\_model *m)}\\
+Ouverture d'un fichier gts.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_load\_pgn(char *file, vef\_model *m)}\\
+Ouverture d'un fichier pgn.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_load\_off(char *file, vef\_model *m)}\\
+Ouverture d'un fichier off.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_load\_ply(char *file, vef\_model *m)}\\
+Ouverture d'un fichier ply.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_load\_wrl(char *file, vef\_model *m)}\\
+Ouverture d'un fichier wrl.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_load\_obj(char *file, vef\_model *m)}\\
+Ouverture d'un fichier obj.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+
+\textbullet \texttt{int vef\_model\_load\_tet(char *file, vef\_model *m)}\\
+Ouverture d'un fichier tet.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier contenant le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_save\_file(char* file, vef\_model m)}\\
+Sauvegarde d'un maillage dans un fichier.\\
+Les types de fichiers supportés pour la sauvegarde sont : pgn, wrl, off, ply, vef, obj.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_save\_vef(char *file, vef\_model m)}\\
+Sauvegarde d'un maillage dans un fichier vef.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_save\_gts(char *file, vef\_model m)}\\
+Sauvegarde d'un maillage dans un fichier gts.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_save\_pgn(char *file, vef\_model m)}\\
+Sauvegarde d'un maillage dans un fichier pgn.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_save\_off(char *file, vef\_model m)}\\
+Sauvegarde d'un lmaillage dans un fichier off.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_save\_ply(char *file, vef\_model m)}\\
+Sauvegarde d'un maillage dans un fichier ply.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_save\_wrl(char *file, vef\_model m)}\\
+Sauvegarde d'un maillage dans un fichier wrl.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_save\_obj(char *file, vef\_model m)}\\
+Sauvegarde d'un maillage dans un fichier obj.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{file} : chemin du fichier où il faut sauvegarder le modèle.\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_add\_vertex(vef\_model *m, double x, double y, double z)}\\
+Ajout d'un sommet au maillage.\\
+Le tableau de \texttt{vef\_vertex} contenant les coordonnées sera agrandi, le compteur de sommet \texttt{m->nbvertex} est incrémenté automatiquement.\\
+Le sommet est initialisé avec les paramètres et la liste des arêtes partant de ce sommet est initialisée à NULL.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{x} : coordonnées en X du nouveau sommet.\\
+\texttt{y} : coordonnées en Y du nouveau sommet.\\
+\texttt{z} : coordonnées en Z du nouveau sommet.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_search\_vertex(vef\_model m, double x, double y, double z)}\\
+Recherche d'un sommet dans le modèle. L'index dans le tableau des sommets est retourné. Si le sommet n'est pas trouvé, on retourne -1.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{x} : coordonnées en X du nouveau sommet.\\
+\texttt{y} : coordonnées en Y du nouveau sommet.\\
+\texttt{z} : coordonnées en Z du nouveau sommet.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_remove\_vertex(vef\_model *m, int numvertex)}\\
+Suppression d'un sommet du modèle.\\
+Si le sommet est utilisé dans des aretes, des faces ou polyhèdres, ces aretes, faces et polyhèdres sont d'abord supprimés.
+Le tableau des sommets est ensuite mis à jour en décalant tous les sommets dont l'index est supérieur à celui supprimé et l'espace est réalloué. Toutes les arêtes sont ensuites mises à jour pour prendre en compte le décalage d'index.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{numvertex} : numéro du sommet à supprimer.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_remove\_list\_of\_vertex(vef\_model *m, int *listvertex, int sizelist)}\\
+Suppression d'une list de sommets du modèle.\\
+Si les sommets sont utilisés dans des aretes, des faces ou polyhèdres, ces aretes, faces et polyhèdres sont d'abord supprimés.
+Le tableau des sommets est ensuite mis à jour en décalant tous les sommets dont l'index est supérieur à celui supprimé et l'espace est réalloué. Toutes les arêtes sont ensuites mises à jour pour prendre en compte le décalage d'index.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{listvertex} : liste de numéro de sommet à supprimer.\\
+\texttt{sizelist} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_add\_edge(vef\_model *m, int ve1, int ve2, int verif)}\\
+Ajout d'une arête au modèle.\\
+Le tableau des arêtes sera agrandi automatiquement et le compteur d'arêtes \texttt{m->nbedge} sera incrméenté automatiquement.\\
+La liste des arêtes partagées par les deux sommets sera mis à jour.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{ve1} : numéro du premier sommet.\\
+\texttt{ve2} : numéro du second sommet.\\
+\texttt{verif} : passer 1 en paramètre s'il faut vérifier si l'arete existe existe, 0 s'il faut faire l'ajout sans vérification.\\
+\texttt{retour} : aucun.\\
+
+\textbullet \texttt{int vef\_model\_search\_edge(vef\_model m, int ve1, int ve2)}\\
+Recherche d'une arête dans le modèle. L'index dans le tableau des arêtes est retourné ou -1 si l'arête n'existe pas.\\
+L'ordre des sommets n'a pas d'importance ici donc le recherche de l'arête (0,5) ou (5,0) retournera le même résultat.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{ve1} : numéro du premier sommet.\\
+\texttt{ve2} : numéro du second sommet.\\
+\texttt{retour} : aucun.\\
+
+\textbullet \texttt{int vef\_model\_remove\_edge(vef\_model *m, int numedge)}\\
+Suppression d'une arête.\\
+Si l'arete est utilisée par des faces ou polyhèdres, ils sont d'abord supprimés. Ensuite les aretes sont décalés et enfin les face sont parcourus pour prendre en compte le décalage d'index des arêtes.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{numedge} : numéro de l'arete.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_remove\_list\_of\_edge(vef\_model *m, int *listedge, int sizelist)}\\
+Suppression d'une liste d'arête.\\
+Si les aretes sont utilisées par des faces ou polyhèdres, ils sont d'abord supprimés. Ensuite les aretes sont décalés et enfin les face sont parcourus pour prendre en compte le décalage d'index des arêtes.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{listedge} : liste de numéro d'arete.\\
+\texttt{sizelist} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_add\_face(vef\_model *m, int ed1, int ed2, int ed3)}\\
+Ajout d'une face au maillage.\\
+Le tableau des faces sera agrandi automatiquement et le compteur de faces \texttt{m->nbface} sera incrémenté automatiquement. La liste des adjacences des trois arêtes sera mis à jour automatiquement.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{ed1} : numéro de la première arete.\\
+\texttt{ed2} : numéro de la seconde arete.\\
+\texttt{ed3} : numéro de la troisieme arete.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_search\_face(vef\_model m, int ed1, int ed2, int ed3)}\\
+Recherche d'une face dans un maillage. L'index de la face dans le tableau des faces sera renvoyé si la face est trouvée. on retournera -1 si la face n'existe pas.\\
+Les faces sont orientés donc la face (0,5,9) et (0,9,5) sont différentes. Si la première est trouvée, la seconde ne le sera pas. \textbf{L'ordre des arêtes est donc important !}\\
+\textbf{Exemple : }\\
+liste de faces (index -> ve1 ve2 ve3):
+\begin{verbatim}
+0 -> 0 1 2
+1 -> 0 2 3 
+2 -> 0 3 1
+3 -> 1 3 2
+\end{verbatim}
+le code
+\begin{verbatim}
+vef_model_search_face(m,0,3,1);
+ou
+vef_model_search_face(m,3,1,0);
+ou
+vef_model_search_face(m,1,0,3);
+\end{verbatim}
+retournera 2 alors que
+\begin{verbatim}
+vef_model_search_face(m,3,0,1);
+\end{verbatim}
+retournera -1\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{ed1} : numéro de la première arete.\\
+\texttt{ed2} : numéro de la seconde arete.\\
+\texttt{ed3} : numéro de la troisieme arete.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_remove\_face(vef\_model *m, int numface)}\\
+Suppression d'une face dans le maillage.\\
+Si la face est utilisée dans des polyhèdres, les polyhèdres sont d'abrod supprimés.\\
+Le tableau des faces sera automatiquement mis à jour en décalant les faces dont l'index est supérieur à la face à supprimer. De plus, les sommets inutilisés après la suppression de la face seront supprimés eux aussi.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{numface} : numéro de la face à supprimer.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_remove\_list\_of\_face(vef\_model *m, int *listface, int sizelist)}\\
+Suppression d'une liste de faces dans le maillage.\\
+Si les faces sont utilisées dans des polyhèdres, les polyhèdres sont d'abrod supprimés.\\
+Le tableau des faces sera automatiquement mis à jour en décalant les faces dont l'index est supérieur à la face à supprimer. De plus, les sommets inutilisés après la suppression de la face seront supprimés eux aussi.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{listface} : liste de numéro de faces à supprimer.\\
+\texttt{sizelist} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_add\_polyhedron(vef\_model *m, int fa1, int fa2, int fa3, int fa4)}\\
+Ajout d'un polyhèdre au maillage.\\
+Le tableau des polyhèdres sera agrandi automatiquement et le compteur de polyhèdres \texttt{m->nbpolyhedron} sera incrémenté automatiquement. La liste des adjacences des quatres faces sera mis à jour automatiquement.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{fa1} : numéro de la première face.\\
+\texttt{fa2} : numéro de la seconde sommet face.\\
+\texttt{fa3} : numéro de la troisième sommet face.\\
+\texttt{fa4} : numéro de la quatrième face.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_search\_polyhedron(vef\_model m, int fa1, int fa2, int fa3, int fa4)}\\
+Recherche d'un polyhèdre dans un modèle. L'index du polyhèdre dans le tableau des polyhèdres sera renvoyé si le polyhèdre est trouvé. On retournera -1 si le polyhèdre n'existe pas.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{fa1} : numéro de la première face.\\
+\texttt{fa2} : numéro de la seconde sommet face.\\
+\texttt{fa3} : numéro de la troisième sommet face.\\
+\texttt{fa4} : numéro de la quatrième face.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_remove\_polyhedron(vef\_model *m, int numpolyhedron)}\\
+Suppression d'un polyhèdre dans un modèle.\\
+Le tableau des polyhèdres sera automatiquement mis à jour en décalant les polyhèdres dont l'index est supérieur à la face à supprimer. De plus, les sommets et faces inutilisés après la suppression du polyhèdre seront supprimés eux aussi.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{numpolyhedron} : numéro du polyhèdre à supprimer.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int vef\_model\_remove\_list\_of\_polyhedron(vef\_model *m, int *listpolyhedron, int sizelist)}\\
+Suppression d'une liste de polyhèdres dans le modèle.\\
+Le tableau des polyhdères sera automatiquement mis à jour en décalant les polyhèdres dont l'index est supérieur au polyhèdre à supprimer. De plus, les sommets et faces inutilisés après la suppression de la face seront supprimés eux aussi.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{listpolyhedron} : liste de numéro de polyhèdres à supprimer.\\
+\texttt{sizelist} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_translate(vef\_model *m, vector3d delta)}\\
+Translation du maillage. La translation est défini par le vecteur3d passé en paramètre.\\
+La translation de tout le maillage se fait en faisant la translation du même vecteur de tous les sommets.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{delta} : vecteur de translation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateX\_radian(vef\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe X d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateX\_degre(vef\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe X d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateX\_radian\_center(vef\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe X autour du point passé en paramètre d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateX\_degre\_center(vef\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe X d'un angle en radian d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateY\_radian(vef\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe Y d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateY\_degre(vef\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe Y d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateY\_radian\_center(vef\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe Y autour du point passé en paramètre d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateY\_degre\_center(vef\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe Y d'un angle en radian d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+
+\textbullet \texttt{void vef\_model\_rotateZ\_radian(vef\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe Z d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateZ\_degre(vef\_model *m, double angle)}\\
+Rotation du maillage suivant l'axe Z d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateZ\_radian\_center(vef\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe Z autour du point passé en paramètre d'un angle en radian.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en radian.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_model\_rotateZ\_degre\_center(vef\_model *m, double angle, point3d centre)}\\
+Rotation du maillage suivant l'axe Z d'un angle en radian d'un angle en degre.\\
+La rotation se fait en faisant subir cette rotation à tous les sommets du maillages.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{angle} : angle de rotation en degré.\\
+\texttt{centre} : centre de la rotation.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{double vef\_model\_area\_model(vef\_model *m)}\\
+Calcule l'aire du modèle en faisant la somme des aires des faces.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modèle.\\
+\texttt{retour} : surface totale du modèle.\\
+
+\newpage
+\bibliographystyle{unsrt}
+\bibliography{manuel}
+
+\end{document}

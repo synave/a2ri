@@ -1,0 +1,26 @@
+    * Revoir et réécrire la documentation.
+    * Programmer le passage d’une structure de données à une autre : VEF <-> hash <-> winged edge.
+    * Mise en place des autotools pour la compilation des bibliothèques et leur installation.
+    * Commenter le code. (les parties qui n’ont pas encore été commentées)
+    * Documenter les algos : donner les références ou expliciter la logique de l’algorithme.
+    * Optimiser les algos. (ICP : calcul plus rapide de la nouvelle erreur ?)
+    * Remplacer space partition par kd tree ou octree. (et faire l’étude)
+    * Réécrire les fonctions de sauvegarde/chargement des fichiers obj, pgn, gts, ply etc. en fonction des standards.
+    * Bug dans la fonction calculant le nombre de parties connexes d’un maillage : apparemment le sprintf (??!!) du look_for de la hashtable.
+    * Conversion rapide d’un format de fichier en un autre format de fichier (sans forcément passer par les structures de données).
+    * Fonctions de clonage de vef_model.
+    * Calcul de l’équation d’un plan moyen de n points à vérifier.
+    * Calcul de la courbure moyenne et courbure de Gauss.
+    * Shapematching.
+    * Bug dans la fonction du graphe couvrant minimal (exemple octopus.pgn)
+    * Erreurs BPA : 
+      	      -> modele : logo_aquitaine rayon = 10 - la boule n'est pas bien definie
+	      -> modele : grille rayon = pas entre deux cases*2 - triangles croisés
+	      -> modele : minolta_range7/fantome vue 01-data-16.stl.wrl rayon = 0.1 - loop dans la creation des triangles
+    * Conversion en CPP
+    * Revoir les Structures de Données ?
+    * Revoir les ajouts/suppression de points/arêtes/faces des les SD
+    * Loom3D :
+	      -> gestion des scènes
+	      -> implémentation des screenshots
+    * Interface graphique pour géodésique

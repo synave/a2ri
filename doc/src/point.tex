@@ -1,0 +1,88 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque POINT}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Cette bibliothèque implémente les structures de données point 2D et point 3D permettant la manipulation de points du plan ou de l'espace.\\
+Attention la structure \textit{point3d} n'est pas la même que la structure utilisée pour le stockage des sommets d'un maillage. Pour les sommets d'un maillage, se reporter à la bibliothèque \textit{vertex.so}.\\
+
+\section{Structures de données}
+
+Le point 2D est une structure comportant deux rééls : sa composante en X et en Y. Le point 3D en comporte trois : composante en X,Y et Z.\\
+
+\begin{verbatim}
+typedef struct
+{
+  double x,y;
+}point2d;
+\end{verbatim}
+
+\begin{verbatim}
+typedef struct
+{
+  double x,y,z;
+}point3d;
+\end{verbatim}
+
+\section{Fonctions}
+\subsection{Fonctions utilisant \texttt{point2d}}
+
+\textbullet \texttt{void point2d\_init(point2d *p, double x, double y)}\\
+Initialisation d'un \texttt{point2d} avec deux rééls.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p} : le point.\\
+\texttt{x} : coordonnées x.\\
+\texttt{y} : coordonnées y.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void point2d\_display(point2d p)}\\
+Affichage d'un \texttt{point2d}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p} : le point.\\
+\texttt{retour} : aucun.\\
+
+
+\subsection{Fonctions utilisant \texttt{point3d}}
+
+\textbullet \texttt{void point3d\_init(point3d *p, double x, double y, double z)}\\
+Initialisation d'un \texttt{point3d} avec trois rééls.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p} : le point.\\
+\texttt{x} : coordonnées x.\\
+\texttt{y} : coordonnées y.\\
+\texttt{z} : coordonnées z.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void point3d\_display(point3d p)}\\
+Affichage d'un \texttt{point3d}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p} : le point.\\
+\texttt{retour} : aucun.\\
+
+
+
+\textbullet \texttt{int point3d\_equal(point3d p1, point3d p2)}\\
+Test de l'égalite de deux \texttt{point3d}. Les deux points sont égaux si leurs composantes sont égales.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p1} : le premier point.\\
+\texttt{p2} : le second point.\\
+\texttt{retour} : aucun.\\
+
+\end{document}

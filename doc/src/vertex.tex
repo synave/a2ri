@@ -1,0 +1,167 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque VERTEX}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Cette bibliothèque implémente les structures de données nécessaires au stockage des sommets d'un maillage ainsi que des fonctions pour manipuler ceux-ci.\\
+Deux strucutres de données sont disponibles : \textit{vf\_vertex} pour le stockage des maillages \textit{vf\_model} et \textit{vef\_vertex} pour le stockage des maillages \textit{vef\_model}.
+
+\section{Structures de données}
+
+La structure \textit{vf\_vertex} est utilisé par la structure \textit{vf\_model} pour stocker les coordonnées des sommets d'un maillage. Cette structure est donc composée de trois rééls qui sont les trois composantes X,Y et Z du sommet ainsi qu'une liste d'index \textit{incidentvertices} de sommets en relation direct, reliés par une arête, avec ce sommet.\\
+\begin{verbatim}
+typedef struct
+{
+  double x;
+  double y;
+  double z;
+  int *incidentvertices;
+  int nbincidentvertices;
+}vf_vertex;
+\end{verbatim}
+
+
+La structure \textit{vef\_vertex} est utilisé par la structure \textit{vef\_model} pour stocker les coordonnées des sommets d'un maillage. Cette structure est donc composée de trois rééls qui sont les trois composantes X,Y et Z du sommet ainsi qu'une liste d'index \textit{sharededges} d'arêtes partant ce sommet.\\
+\begin{verbatim}
+typedef struct
+{
+  double x;
+  double y;
+  double z;
+  int *sharededges;
+  int nbsharededges;
+}vef_vertex;
+\end{verbatim}
+
+\section{Fonctions}
+
+\subsection{Fonctions utilisant \textit{vf\_vertex}}
+
+
+\textbullet void vf\_vertex\_display(vf\_vertex v)\\
+Affichage d'un \textit{vf\_vertex}.\\
+
+
+\textbullet void vf\_vertex\_translate(vf\_vertex *v, vector3d delta)\\
+Translation d'un vecteur passé en paramètre.\\
+Les composantes \textit{dx,dy,dz} sont ajoutés aux coordonnées du \textit{vf\_vertex}.\\
+
+
+\textbullet void vf\_vertex\_rotateX\_radian(vf\_vertex *v, double angle)\\
+Rotation suivant l'axe X d'un angle en radian.\\
+
+
+\textbullet void vf\_vertex\_rotateX\_degre(vf\_vertex *v, double angle)\\
+Rotation suivant l'axe X d'un angle en degre.\\
+
+
+\textbullet void vf\_vertex\_rotateX\_center\_radian(vf\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe X d'un angle en radian et autour du \textit{point3d centre}.\\
+
+
+\textbullet void vf\_vertex\_rotateX\_center\_degre(vf\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe X d'un angle en degre et autour du \textit{point3d centre}.\\
+
+
+\textbullet void vf\_vertex\_rotateY\_radian(vf\_vertex *v, double angle)\\
+Rotation suivant l'axe Y d'un angle en radian.\\
+
+
+\textbullet void vf\_vertex\_rotateY\_degre(vf\_vertex *v, double angle)\\
+Rotation suivant l'axe Y d'un angle en degre.\\
+
+
+\textbullet void vf\_vertex\_rotateY\_center\_radian(vf\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe Y d'un angle en radian et autour du \textit{point3d centre}.\\
+
+
+\textbullet void vf\_vertex\_rotateY\_center\_degre(vf\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe Y d'un angle en degre et autour du \textit{point3d centre}.\\
+
+
+\textbullet void vf\_vertex\_rotateZ\_radian(vf\_vertex *v, double angle)\\
+Rotation suivant l'axe Z d'un angle en radian.\\
+
+
+\textbullet void vf\_vertex\_rotateZ\_degre(vf\_vertex *v, double angle)\\
+Rotation suivant l'axe Z d'un angle en degre.\\
+
+
+\textbullet void vf\_vertex\_rotateZ\_center\_radian(vf\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe Z d'un angle en radian et autour du \textit{point3d centre}.\\
+
+
+\textbullet void vf\_vertex\_rotateZ\_center\_degre(vf\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe Z d'un angle en degre et autour du \textit{point3d centre}.\\
+
+
+
+\subsection{Fonctions utilisant \textit{vef\_vertex}}
+
+\textbullet void vef\_vertex\_display(vef\_vertex v)\\
+Affichage d'un \textit{vef\_vertex}.\\
+
+
+\textbullet void vef\_vertex\_translate(vef\_vertex *v, vector3d delta)\\
+Translation d'un vecteur passé en paramètre.\\
+Les composantes \textit{dx,dy,dz} sont ajoutés aux coordonnées du \textit{vef\_vertex}.\\
+
+
+\textbullet void vef\_vertex\_rotateX\_radian(vef\_vertex *v, double angle)\\
+Rotation suivant l'axe X d'un angle en radian.\\
+
+
+\textbullet void vef\_vertex\_rotateX\_degre(vef\_vertex *v, double angle)\\
+Rotation suivant l'axe X d'un angle en degre.\\
+
+
+\textbullet void vef\_vertex\_rotateX\_center\_radian(vef\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe X d'un angle en radian et autour du \textit{point3d centre}.\\
+
+
+\textbullet void vef\_vertex\_rotateX\_center\_degre(vef\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe X d'un angle en degre et autour du \textit{point3d centre}.\\
+
+
+\textbullet void vef\_vertex\_rotateY\_radian(vef\_vertex *v, double angle)\\
+Rotation suivant l'axe Y d'un angle en radian.\\
+
+
+\textbullet void vef\_vertex\_rotateY\_degre(vef\_vertex *v, double angle)\\
+Rotation suivant l'axe Y d'un angle en degre.\\
+
+
+\textbullet void vef\_vertex\_rotateY\_center\_radian(vef\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe Y d'un angle en radian et autour du \textit{point3d centre}.\\
+
+
+\textbullet void vef\_vertex\_rotateY\_center\_degre(vef\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe Y d'un angle en degre et autour du \textit{point3d centre}.\\
+
+
+\textbullet void vef\_vertex\_rotateZ\_radian(vef\_vertex *v, double angle)\\
+Rotation suivant l'axe Z d'un angle en radian.\\
+
+
+\textbullet void vef\_vertex\_rotateZ\_degre(vef\_vertex *v, double angle)\\
+Rotation suivant l'axe Z d'un angle en degre.\\
+
+
+\textbullet void vef\_vertex\_rotateZ\_center\_radian(vef\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe Z d'un angle en radian et autour du \textit{point3d centre}.\\
+
+
+\textbullet void vef\_vertex\_rotateZ\_center\_degre(vef\_vertex *v, double angle, point3d centre)\\
+Rotation suivant l'axe Z d'un angle en degre et autour du \textit{point3d centre}.\\
+
+\end{document}

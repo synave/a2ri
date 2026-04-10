@@ -1,0 +1,110 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque OVERLAP}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Bibliothèque où sont implémentées les fonctions permettant de vérifier l'intersection de Bounding Box ou de calculer le taux de recouvrement de deux maillages.
+
+
+\section{Fonctions}
+
+
+\textbullet \texttt{int intersection\_axis\_aligned\_bounding\_box\_with\_axis\_aligned\_bounding\_box\_list(point3d min, point3d max, point3d *listmin, point3d *listmax, int size)}\\
+Test d'intersection entre une Axis Aligned Bounding Box (AABB), \texttt{min} et \texttt{max}, et un ensemble d'AABB, \texttt{listmin} et \texttt{listmax}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{min} : point minimal de la boundingbox à tester (xmin,ymin,zmin).\\
+\texttt{max} : point maximal de la boundingbox à tester (xmax,ymax,zmax).\\
+\texttt{listmin} : liste de points minimaux des boundingbox (xmin,ymin,zmin).\\
+\texttt{listmax} : liste de points maximaux des boundingbox (xmax,ymax,zmax).\\
+\texttt{size} : nombre de boundingbox dans la liste.\\
+\texttt{retour} : 1 s'il y a instersection, 0 sinon.\\
+
+
+\textbullet \texttt{int intersection\_bounding\_ball\_with\_bounding\_ball\_list(point3d c, double rayon, point3d *listcentre, double *listrayon, int nbelt, double alpha)}\\
+Test d'intersection d'une bounding ball définie par son centre \texttt{c} et son rayon \texttt{rayon} avec une liste de bounding ball définie par leur centre \texttt{listcentre} et leur rayon \texttt{listrayon}.\\
+\textbf{Formule :}\\
+Il y a intersection entre la bounding ball de centre $c1$ et de rayon $r1$ et une bounding ball de centre $c2$ et de rayon $r2$ si : $||c2-c1||<||r2-r1|| \times alpha$.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{c} : centre de la bounding sphere à tester.\\
+\texttt{rayon} : rayon de la  bounding sphere à tester.\\
+\texttt{listcentre} : liste de centre des bounding sphere.\\
+\texttt{listrayon} : liste des rayons des bounding sphere.\\
+\texttt{nbelt} : taille de la liste de bounding sphere.\\
+\texttt{alpha} : paramètre de "rapprochement" (voir formule).\\
+\texttt{retour} : 1 s'il y a instersection, 0 sinon.\\
+
+
+
+\textbullet \texttt{double vf\_model\_bounding\_ball\_ritter\_compute\_overlap(vf\_model *base, vf\_model *m)}\\
+Calcul du taux de recouvrement de deux maillages en utilisant les bounding ball de Ritter.\\
+\textbf{Algorithme :}\\
+1) Calculer les bounding ball de Ritter de toutes les faces des modèles \texttt{base} et \texttt{m}.\\
+2) Pour toutes les faces de \texttt{m}, si la bounding ball de cette face s'intersecte avec l'une des bounding ball des faces de \texttt{base} alors marquer la face de \texttt{m}.\\
+3) Pour toutes les faces marquées de \texttt{m}, ajouter les sommets sans redondance à une liste \texttt{L}.\\
+4) Le taux de recouvrement = $\frac {||L||} {||m||} $.\\
+où ||\texttt{L}|| est le nombre d'éléments de la liste \texttt{L} et ||\texttt{m}| est le nombre de sommets du maillage \texttt{m}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{base} : premier modele.\\
+\texttt{m} : second modele.\\
+\texttt{retour} : taux de recouvrement de \texttt{m} sur \texttt{base}.\\
+
+
+
+\textbullet \texttt{double vf\_model\_axis\_aligned\_bounding\_box\_compute\_overlap(vf\_model *base, vf\_model *m)}\\
+Calcul du taux de recouvrement de deux maillages en utilisant les AABB.\\
+\textbf{Algorithme :}\\
+1) Calculer les AABB de toutes les faces des modèles \texttt{base} et \texttt{m}.\\
+2) Pour toutes les faces de \texttt{m}, si l'AABB de cette face s'intersecte avec l'une des AABB des faces de \texttt{base} alors marquer la face de \texttt{m}.\\
+3) Pour toutes les faces marquées de \texttt{m}, ajouter les sommets sans redondance à une liste \texttt{L}.\\
+4) Le taux de recouvrement = $\frac {||L||} {||m||} $.\\
+où ||\texttt{L}|| est le nombre d'éléments de la liste \texttt{L} et ||\texttt{m}| est le nombre de sommets du maillage \texttt{m}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{base} : premier modele.\\
+\texttt{m} : second modele.\\
+\texttt{retour} : taux de recouvrement de \texttt{m} sur \texttt{base}.\\
+
+
+\textbullet \texttt{void vf\_model\_bounding\_ball\_ritter\_find\_face\_overlapping(vf\_model *base, vf\_model *m, int **list, int *size, double alpha)}\\
+Liste les faces de \texttt{m} s'intersectant avec les face de \texttt{base} en utilisant les bounding ball de Ritter. L'indes des faces est ajoutées à la liste \texttt{list}.\\
+\textbf{Algorithme :}\\
+1) Calculer les bounding ball de Ritter de toutes les faces des modèles \texttt{base} et \texttt{m}.\\
+2) Pour toutes les faces de \texttt{m}, si la bounding ball de cette face s'intersecte avec l'une des bounding ball des faces de \texttt{base} alors ajouter la face à la liste \texttt{list}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{base} : premier modele.\\
+\texttt{m} : second modele.\\
+\texttt{list} : liste des numéros des faces de \texttt{m} s'intersectant avec \texttt{base}.\\
+\texttt{size} : taille de la liste.\\
+\texttt{alpha} : paramètre de rapprochement (voir formule de la fonction intersection\_bounding\_ball\_with\_bounding\_ball\_list).\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_axis\_aligned\_bounding\_box\_find\_face\_overlapping(vf\_model *base, vf\_model *m, int **listface, int *size)}\\
+Liste les faces de \texttt{m} s'intersectant avec les face de \texttt{base} en utilisant les AABB. L'indes des faces est ajoutées à la liste \texttt{list}.\\
+\textbf{Algorithme :}\\
+1) Calculer les AABB de toutes les faces des modèles \texttt{base} et \texttt{m}.\\
+2) Pour toutes les faces de \texttt{m}, si l'AABB de cette face s'intersecte avec l'une des AABB des faces de \texttt{base} alors ajouter la face à la liste \texttt{list}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{base} : premier modele.\\
+\texttt{m} : second modele.\\
+\texttt{list} : liste des numéros des faces de \texttt{m} s'intersectant avec \texttt{base}.\\
+\texttt{size} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\end{document}

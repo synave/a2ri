@@ -1,0 +1,129 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque FACE}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Cette bibliothèque implémente les structures de données nécessaires au stockage des faces d'un maillage ainsi que des fonctions pour manipuler celles-ci.\\
+Deux structures de données sont disponibles : \texttt{vf\_face} pour le stockage des maillages \texttt{vf\_model} et \texttt{vef\_face} pour le stockage des maillages \texttt{vef\_model}.\\
+Les faces, quelles soient \texttt{vf\_face} ou \texttt{vef\_face}, sont orientées. Une \texttt{vf\_face} (resp. \texttt{vef\_face}) définie par les sommets (resp. arêtes) $(0,2,5)$ sera l'inverse de la \texttt{vf\_face} (resp. \texttt{vef\_face}) défini par les sommets (resp. arêtes) $(0,5,2)$.\\
+
+\section{Structures de données}
+
+Les faces des \texttt{vf\_model} sont définis par trois sommets : \texttt{ve1,ve2,ve3}, les trois index des sommets de la structure \texttt{vf\_face}.\\
+La variable \texttt{type} permet d'enregistrer le type de la face s'il est disponible.\\
+\begin{verbatim}
+typedef struct
+{
+  int ve1; //premier sommet de la face
+  int ve2; //second sommet de la face
+  int ve3; //troisième sommet de la face
+  int type; //type de la face : UNKNOW, BLACK, WHITE ou GRAY
+}vf_face;
+\end{verbatim}
+
+Les faces des \texttt{vef\_model} sont définis par trois arêtes : \texttt{ed1,ed2,ed3}, les trois index des arêtes de la structure \texttt{vef\_face}.\\
+La variable \texttt{type} permet d'enregistrer le type de la face s'il est disponible.\\
+\begin{verbatim}
+typedef struct
+{
+  int ed1; //première arête de la face
+  int ed2; //seconde arête de la face
+  int ed3; //troisième arête de la face
+  int type; //type de la face : UNKNOW, BLACK, WHITE ou GRAY
+}vef_face;
+\end{verbatim}
+
+\section{Fonctions}
+\subsection{Fonctions utilisant \texttt{vf\_face}}
+
+\textbullet \texttt{void vf\_face\_display(vf\_face f)}\\
+Affichage des trois sommets de la face sous la forme :\\
+\begin{verbatim}
+FACE : (ve1,ve2,ve3)
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{f} : face de type vf\_face.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_face\_reverse(vf\_face *f)}\\
+Inversion de l'orientation de la face.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{f} : face de type vf\_face.\\
+\texttt{retour} : aucun.\\
+
+\textbullet \texttt{int vf\_face\_contains(vf\_face *f, int numvertex)}\\
+Teste la présence du sommet \texttt{numvertex} dans la face \texttt{f}.
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{f} : face de type vf\_face.\\
+\texttt{numvertex} : numéro du sommet à tester.\\
+\texttt{retour} : 1 si le sommet apparatient à la face, 0 sinon.\\
+
+\textbullet \texttt{void vf\_face\_free(vf\_face *f)}\\
+Libération de la mémoire allouée pour les \texttt{sharedpolyhedrons}.
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{f} : face de type vf\_face.\\
+\texttt{retour} : aucun.\\
+
+\subsection{Fonctions utilisant \texttt{vef\_face}}
+
+\textbullet \texttt{void vef\_face\_display(vef\_face f)}\\
+Affichage des trois aretes de la face sous la forme :\\
+\begin{verbatim}
+FACE : (ed1,ed2,ed3)
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{f} : face de type vefh\_face.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_face\_reverse(vef\_face *f)}\\
+Inversion de l'orientation de la face.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{f} : face de type vefh\_face.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vef\_face\_get\_vertices(vef\_face f, vef\_edge *list, int *ve1, int *ve2, int *ve3)}\\
+Permet de retrouver les index des trois sommets orientés de la face.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{f} : face de type vef\_face.\\
+\texttt{list} : liste des aretes vef\_edge du modèle.\\
+\texttt{ve1} : numéro du premier sommet.\\
+\texttt{ve2} : numéro du second sommet.\\
+\texttt{ve3} : numéro du troisième sommet.\\
+\texttt{retour} : aucun.\\
+
+\textbullet \texttt{int vef\_face\_contains(vf\_face *f, int numvertex)}\\
+Teste la présence du sommet \texttt{numvertex} dans la face \texttt{f}.
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{f} : face de type vef\_face.\\
+\texttt{numvertex} : numéro du sommet à tester.\\
+\texttt{retour} : 1 si le sommet apparatient à la face, 0 sinon.\\
+
+\textbullet \texttt{void vef\_face\_free(vef\_face *f)}\\
+Libération de la mémoire allouée pour les \texttt{sharedpolyhedrons}.
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{f} : face de type vef\_face.\\
+\texttt{retour} : aucun.\\
+
+\end{document}

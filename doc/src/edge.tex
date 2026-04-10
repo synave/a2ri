@@ -1,0 +1,83 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque EDGE}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Cette bibliothèque implémente les structures de données nécessaires au stockage des arêtes d'un maillage.\\
+Deux structures de données sont disponibles : \texttt{vf\_edge} et \texttt{vef\_vertex} pour la manipulation et le stockage des maillages \texttt{vf\_model} et \texttt{vef\_model}.\\
+
+\section{Structures de données}
+
+Cette structure contient les deux sommets \texttt{ve1} et \texttt{ve2} qui sont les extrémités de l'arête, une liste \texttt{sharedfaces} d'index des faces partagées par l'arête et un index \texttt{midvertex} à utilité variable servant notamment pour la subdivision lors du découpage des arêtes.\\
+\begin{verbatim}
+typedef struct
+{
+  int ve1; //extrémité de l'arête
+  int ve2; //extrémité de l'arête
+  int *sharedfaces; //liste des faces partagées
+  int nbsharedfaces; //nombre de faces partagées
+  int midvertex; //index à utilité variable
+}vf_edge;
+\end{verbatim}
+
+Les \texttt{vef\_edge} sont utilisées pour le stockage des arêtes dans les \texttt{vef\_model}. Les arêtes sont composées des sommets \texttt{ve1} et \texttt{ve2} qui sont les extrémités et une liste de faces partagées \texttt{sharedfaces} par celle-ci.\\
+\begin{verbatim}
+typedef struct
+{
+  int ve1; //extrémité de l'arête
+  int ve2; //extrémité de l'arête
+  int *sharedfaces; //liste des faces partagées
+  int nbsharedfaces; //nombre de faces partagées
+}vef_edge;
+\end{verbatim}
+
+\section{Fonctions}
+\subsection{Fonction utilisée par \texttt{vf\_edge}}
+
+\textbullet \texttt{void vf\_edge\_display(vf\_edge e)}\\
+Affichage de l'arête sous la forme :\\
+\begin{verbatim}
+ARETE : (ve1,ve2)
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{e} : arete de type vf\_edge.\\
+\texttt{retour} : aucun.\\
+
+\textbullet \texttt{void vf\_edge\_free(vf\_edge *e)}\\
+Libération de la mémoire allouée pour les \texttt{sharedfaces}.
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{e} : arete de type vf\_edge.\\
+\texttt{retour} : aucun.\\
+
+\subsection{Fonction utilisée par \texttt{vef\_edge}}
+
+\textbullet \texttt{void vef\_edge\_display(vef\_edge e)}\\
+Affichage de l'arête sous la forme :\\
+\begin{verbatim}
+ARETE : (ve1,ve2)
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{e} : arete de type vef\_edge.\\
+\texttt{retour} : aucun.\\
+
+\textbullet \texttt{void vef\_edge\_free(vef\_edge *e)}\\
+Libération de la mémoire allouée pour les \texttt{sharedfaces}.
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{e} : arete de type vef\_edge.\\
+\texttt{retour} : aucun.\\
+
+\end{document}

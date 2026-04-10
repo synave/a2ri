@@ -1,0 +1,125 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque UTIL}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+
+Cette bibliothèque permet de gérer des listes d'entiers et de rééls.\\
+Il est possible d'ajouter, enlever, afficher, rechercher des éléments, de faire des décalages et des calculs statistiques.\\
+
+\section{Fonctions}
+
+\textbullet int list\_int\_contains(int *list, int size, int tosearch)\\
+Renvoie l'index de l'élément recherché, -1 si l'élément n'est pas trouvé.\\
+
+
+\textbullet int list\_double\_contains(double *list, int size, double tosearch)\\
+Renvoie l'index de l'élément recherché, -1 si l'élément n'est pas trouvé.\\
+
+
+\textbullet int list\_int\_add(int **list, int *size, int toadd, int add\_type)\\
+Ajoute l'élément en fin de liste.\\
+Le paramètre \textit{add\_type} peut prendre deux valeurs : \textit{WITH\_REDUNDANCE} ou \textit{WITHOUT\_REDUNDANCE}.\\
+Si \textit{add\_type==WITH\_REDUNDANCE}, l'ajout est direct. Si \textit{add\_type==WITHOUT\_REDUNDANCE}, on parcourt la liste et on ajoute en fin de liste seulement si l'élément n'est pas déjà présent.\\
+
+
+\textbullet int list\_double\_add(double **list, int *size, double toadd, int add\_type)\\
+Ajoute l'élément en fin de liste.\\
+Le paramètre \textit{add\_type} peut prendre deux valeurs : \textit{WITH\_REDUNDANCE} ou \textit{WITHOUT\_REDUNDANCE}.\\
+Si \textit{add\_type==WITH\_REDUNDANCE}, l'ajout est direct. Si \textit{add\_type==WITHOUT\_REDUNDANCE}, on parcourt la liste et on ajoute en fin de liste seulement si l'élément n'est pas déjà présent.\\
+
+
+\textbullet int list\_int\_remove(int **list, int *size, int index)\\
+Supprime l'élément se trouvant à la position \textit{index}.\\
+
+
+\textbullet int liste\_double\_remove(double **list, int *size, int index)\\
+Supprime l'élément se trouvant à la position \textit{index}.\\
+
+
+\textbullet void list\_int\_display(int *list, int size)\\
+Affiche la liste.\\
+
+
+\textbullet void list\_double\_display(double *list, int size)\\
+Affiche la liste.\\
+
+
+\textbullet void list\_int\_reverse(int *list, int size)\\
+Inverse la liste.\\
+
+
+\textbullet void list\_double\_reverse(double *list, int size)\\
+Inverse la liste.\\
+
+
+\textbullet void list\_int\_shift\_right(int *list, int size, int shift)\\
+Décalage à droite de \textit{shift} positions.\\
+
+
+\textbullet void list\_int\_shift\_left(int *list, int size, int shift)\\
+Décalage à gauche de \textit{shift} positions.\\
+
+
+\textbullet void list\_double\_shift\_right(double *list, int size, int shift)\\
+Décalage à droite de \textit{shift} positions.\\
+
+
+\textbullet void list\_double\_shift\_left(double *list, int size, int shift)\\
+Décalage à gauche de \textit{shift} positions.\\
+
+
+\textbullet int list\_int\_min(int* list, int size)\\
+Retourne la valeur minimale de la liste.\\
+
+
+\textbullet int list\_int\_max(int *list, int size)\\
+Retourne la valeur maximale de la liste.\\
+
+
+\textbullet double list\_double\_min(double* list, int size)\\
+Retourne la valeur minimale de la liste.\\
+
+
+\textbullet double list\_double\_max(double *list, int size)\\
+Retourne la valeur maximale de la liste.\\
+
+
+\textbullet double list\_int\_average(int *list, int size)\\
+Retourne la valeur moyenne de la liste.\\
+
+
+\textbullet double list\_int\_variance(int *list, int size)\\
+Retourne la variance de la liste.\\
+
+
+\textbullet double list\_double\_average(double *list, int size)\\
+Retourne la valeur moyenne de la liste.\\
+
+
+\textbullet double list\_double\_variance(double *list, int size)\\
+Retourne la variance de la liste.\\
+
+ 
+\textbullet void list\_int\_sort(int *list, int size, int type)\\
+Tri la liste.\\
+Le paramètre \textit{type} peut prendre deux valeurs : \textit{ASC} ou \textit{DESC}.\\
+Si \textit{type==ASC} alors la liste sera triée de façon croissante. Si \textit{type==DESC}, la liste sera triée de façon décroissante.
+
+
+\textbullet void list\_double\_sort(double *list, int size, int type)\\
+Tri la liste.\\
+Le paramètre \textit{type} peut prendre deux valeurs : \textit{ASC} ou \textit{DESC}.\\
+Si \textit{type==ASC} alors la liste sera triée de façon croissante. Si \textit{type==DESC}, la liste sera triée de façon décroissante.
+
+\end{document}

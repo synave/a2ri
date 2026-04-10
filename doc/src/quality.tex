@@ -1,0 +1,180 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque QUALITY}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Dans cette bibliothèque sont implémentées des fonctions permettant d'apprécier la qualité d'un maillage.
+
+\section{Fonctions}
+
+
+\textbullet \texttt{double vf\_model\_mean\_ratio\_metric\_for\_a\_face(vf\_model *m, int numface)}\\
+Calcul du \texttt{Mean Ratio Metric}\cite{DKMS2006} d'une face.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modele.\\
+\texttt{numface} : le numéro de la face à évaluer.\\
+\texttt{retour} : évaluation de la face.\\
+
+
+\textbullet \texttt{double vf\_model\_mean\_ratio\_metric(vf\_model *m)}\\
+Calcul du \texttt{Mean Ratio Metric} d'un maillage.\\
+Le \texttt{Mean Ratio Metric} d'un maillage complet est égale à la moyenne des \textit{Mean Ratio Metric} de ses faces.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modele.\\
+\texttt{retour} : évaluation du modele.\\
+
+
+\textbullet \texttt{void vf\_model\_list\_angle(vf\_model *m,double **list, int *size)}\\
+Liste la valeur en degré des angles de toutes les faces d'un maillage.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modele.\\
+\texttt{list} : liste des angles de tous les triangles.\\
+\texttt{size} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_list\_area(vf\_model *m,double **list, int *size)}\\
+Liste la valeur des aires de toutes els faces d'un maillage.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modele.\\
+\texttt{list} : liste des aires de tous les triangles.\\
+\texttt{size} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_list\_valence(vf\_model *m,int **list, int *size)}\\
+Liste les valences des sommets d'un maillage.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modele.\\
+\texttt{list} : liste des valence de tous les sommets.\\
+\texttt{size} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_list\_edge\_length(vf\_model *m, double **list, int *size)}\\
+Liste la longueur des toutes les arêtes d'un maillage.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modele.\\
+\texttt{list} : liste des longueurs de toutes les aretes.\\
+\texttt{size} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_list\_height\_length(vf\_model *m, double **list, int *size)}\\
+Liste l'ensemble des hauteurs des faces d'un modèle.\\
+Chaque face étant un triangle, trois hauteurs sont données par face.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modele.\\
+\texttt{list} : liste des hauteurs de tous les triangles.\\
+\texttt{size} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int* vf\_model\_angle\_measure(vf\_model *m)}\\
+Synthétise la valeur en degré des angles d'un modèle dans un tableau par intervalle de dix degrés.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le modele.\\
+\texttt{retour} : tableau de 18 valeurs contenant la synthèse des valeurs des angles des triangles.\\
+
+
+\textbullet \texttt{double DPP(point3d p, point3d *points, int size)}\\
+Calcul de la distance Point-Point entre un point et un ensemble de points. \cite{CRS1998,G1999}\\
+\textbf{Algorithme :}\\
+$DPP(p,points)=\min_{v\in{points}}\parallel p-v \parallel$\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{p} : le point pour lequel on cherche la distance avec l'ensemble de points.\\
+\texttt{points} : l'ensemble de points.\\
+\texttt{size} : taille de la liste de points.\\
+\texttt{retour} : longueur point à point entre le point et l'ensemble de point.\\
+
+
+\textbullet \texttt{double vf\_model\_hausdorff(vf\_model *m1, vf\_model *m2, int sampling)}\\
+Calcul la distance de Hausdorff \cite{CRS1998,G1999} entre deux maillages.\\
+La distance de Hausdorff est calculé entre deux ensembles de points. Le paramètre \texttt{sampling} peut prendre deux valeurs : \texttt{SAMPLING} et \texttt{NO\_SAMPLING}. Si \texttt{sampling==SAMPLING} alors les ensembles des points seront l'ensemble des sommets du maillage ainsi que l'ensemble des points fournis lors de l'échantillonnage de toutes les faces. Si \texttt{sampling==NO\_SAMPLING}, l'ensemble de points se réduit aux simple sommets du maillage.\\
+\textbf{Algorithme :}\\
+Soit $U$ et $V$ nos deux ensembles de points.\\
+$Hausdorff(U,V)=\max(\max{u\in{U}}DPP(u,V),\max{v\in{V}}DPP(v,U))$
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m1} : le premier maillage.\\
+\texttt{m2} : le second maillage.\\
+\texttt{sampling} : paramètre qui gère l'échantillonnage ou non des faces.\\
+\texttt{retour} : distance de Hausdorff entre \texttt{m1} et \texttt{m2}.\\
+
+
+\textbullet \texttt{double vf\_model\_Emn\_DPP(vf\_model *m1, vf\_model *m2, int sampling)}\\
+Calcul de l'erreur $E_mean\_DPP$ entre deux maillages.\cite{GH1997}\\
+L'erreur $E_mean\_DPP$ se calcule entre deux ensembles de points.\\
+Algorithme : \\
+Soit $U$ et $V$ nos deux ensembles de points.\\
+$$E_{MN\_DPP}(U,V)=\frac 1 {w_1+w_2} (\int_{u \in{U}} DPP^2(u,V) + \int_{v \in{V}} DPP^2(v,U))$$
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m1} : le premier maillage.\\
+\texttt{m2} : le second maillage.\\
+\texttt{sampling} : paramètre qui gère l'échantillonnage ou non des faces.\\
+\texttt{retour} : erreur Emn\_DPP entre \texttt{m1} et \texttt{m2}.\\
+
+
+\textbullet \texttt{double vf\_model\_triangle\_aspect\_ratio(vf\_model *m, int numface)}\\
+Calcul de l'aspect ratio d'un triangle.\\
+L'aspect ratio est le rapport entre le plus grand de ses côtés et la hauteur perpendiculaire à ce côté.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le maillage.\\
+\texttt{numface} : numéro de la face à évaluer.\\
+\texttt{retour} : évaluation de la face.\\
+
+
+\textbullet \texttt{void vf\_model\_list\_triangle\_aspect\_ratio(vf\_model *m, double **list, int *size)}\\
+Liste les valeurs des aspect ratio de toutes les faces.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le maillage.\\
+\texttt{list} : aspect ratio de toutes les faces.\\
+\texttt{size} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{double vf\_model\_face\_size\_variation(vf\_model *m, int face1, int face2)}\\
+Retourne la variation d'aire entre deux faces $\frac{\mathbf{A}_{face1}}{\mathbf{A}_{face2}}$.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le maillage.\\
+\texttt{face1} : numero de la premiere face.\\
+\texttt{face2} : numero de la seconde face.\\
+\texttt{retour} : variation de la taille.\\
+
+
+\textbullet \texttt{void vf\_model\_list\_radius\_incircle(vf\_model *m, double **list, int *size)}\\
+Liste les longueurs des rayons des cercles inscrit pour chaque face.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{m} : le maillage.\\
+\texttt{list} : liste des longueurs des rayons des cercles inscrits à toutes les faces.\\
+\texttt{size} : taille de la liste.\\
+\texttt{retour} : aucun.\\
+
+\bibliographystyle{unsrt}
+\bibliography{manuel}
+
+\end{document}

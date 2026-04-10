@@ -1,0 +1,276 @@
+/*************************************/
+/* Auteur : Rémi Synave              */
+/* Date de création : 17/03/15       */
+/* Date de modification : 17/03/15   */
+/* Version : 0.4                     */
+/*************************************/
+
+/***************************************************************************/
+/* This file is part of a2ri.                                              */
+/*                                                                         */
+/* a2ri is free software: you can redistribute it and/or modify it         */
+/* under the terms of the GNU Lesser General Public License as published   */
+/* by the Free Software Foundation, either version 3 of the License, or    */
+/* (at your option) any later version.                                     */
+/*                                                                         */
+/* a2ri is distributed in the hope that it will be useful,                 */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of          */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           */
+/* GNU Lesser General Public License for more details.                     */
+/*                                                                         */
+/* You should have received a copy of the GNU Lesser General Public        */
+/* License along with a2ri.                                                */
+/* If not, see <http://www.gnu.org/licenses/>.                             */
+/***************************************************************************/
+
+
+
+#ifndef SKELETON__H
+#define SKELETON__H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "util.h"
+#include "vertex.h"
+#include "edge.h"
+#include "space_partition.h"
+
+
+/**
+ * \struct skeleton skeleton.h skeleton
+ * Structure de données pour stocker un squelette composé d'une ensemble de sommets et d'arêtes. Chaque arête est définie par deux entiers qui sont es indices des sommets délimitant l'arête.
+ */
+typedef struct
+{
+  skeleton_vertex *ve;
+  skeleton_edge *ed;
+  int nbvertex;
+  int nbedge;
+} skeleton;
+
+
+/**
+   Initialisation d'un squelette avec un maillage vide
+   @param m pointeur sur le squelette
+   @return aucun
+*/
+void a2ri_skeleton_init (
+		   skeleton * s);
+
+/**
+   Libération de l'espace mémoire utilisé
+   @param m pointeur sur le squelette
+*/
+void a2ri_skeleton_free (
+		   skeleton * s);
+
+/**
+   Affichage des caractéristiques générales d'un squelette (sommets et arêtes)
+   @param m le squelette
+   @return aucun
+*/
+
+void a2ri_skeleton_display (
+		      const skeleton * const s);
+
+/**
+   Affichage des caractéristiques détaillées d'un squelette (sommets et arêtes et leurs adjacences)
+   @param m le squelette
+   @return aucun
+*/
+void a2ri_skeleton_display_detail (
+			     const skeleton * const s);
+
+/**
+   Ajout d'un vertex (x,y,z) au squelette
+   @param m pointeur sur le squelette
+   @param x coordonnée x du vertex
+   @param y coordonnée y
+   @param z coordonnée z
+   @return 1 si succès, 0 sinon
+*/
+int a2ri_skeleton_add_vertex (
+			skeleton * s,
+			double x,
+			double y,
+			double z);
+
+/**
+   Ajout d'une arête défini par trois points (numéros d'index dans la liste de points) au squelette
+   @param m pointeur sur le squelette
+   @param ve1 index du premier point
+   @param ve2 index du second point
+   @return 1 si succès, 0 sinon
+*/
+int a2ri_skeleton_add_edge (
+		      skeleton * s,
+		      int ve1,
+		      int ve2);
+
+/**
+   Translation du squelette
+   @param m pointeur sur le squelette à translater
+   @param delta pointeur sur le vecteur de translation
+   @return aucun
+*/
+void a2ri_skeleton_translate (
+			skeleton * s,
+			const vector3d * const delta);
+
+/**
+   Rotation d'un squelette en radian autour de l'axe X
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en radian
+   @return aucun
+*/
+void a2ri_skeleton_rotateX_radian (
+			     skeleton * s,
+			     double angle);
+
+/**
+   Rotation d'un squelette en degré autour de l'axe X
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en degré
+   @return aucun
+*/
+void a2ri_skeleton_rotateX_degre (
+			    skeleton * s,
+			    double angle);
+
+/**
+   Rotation d'un squelette en radian suivant l'axe X de centre (cx,cy,cz)
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en radian
+   @param centre pointeur sur le point3d servant de centre à la rotation
+   @return aucun
+*/
+void a2ri_skeleton_rotateX_radian_center (
+				    skeleton * s,
+				    double angle,
+				    const point3d * const centre);
+
+/**
+   Rotation d'un squelette en degre suivant l'axe X de centre (cx,cy,cz)
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en degre
+   @param centre pointeur sur le point3d servant de centre à la rotation
+   @return aucun
+*/
+void a2ri_skeleton_rotateX_degre_center (
+				   skeleton * s,
+				   double angle,
+				   const point3d * const centre);
+
+/**
+   Rotation d'un squelette en radian autour de l'axe Y
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en radian
+   @return aucun
+*/
+void a2ri_skeleton_rotateY_radian (
+			     skeleton * s,
+			     double angle);
+
+/**
+   Rotation d'un squelette en degré autour de l'axe Y
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en degré
+   @return aucun
+*/
+void a2ri_skeleton_rotateY_degre (
+			    skeleton * s,
+			    double angle);
+
+/**
+   Rotation d'un squelette en radian suivant l'axe Y de centre (cx,cy,cz)
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en radian
+   @param centre pointeur sur le point3d servant de centre à la rotation
+   @return aucun
+*/
+void a2ri_skeleton_rotateY_radian_center (
+				    skeleton * s,
+				    double angle,
+				    const point3d * const centre);
+
+/**
+   Rotation d'un squelette en degre suivant l'axe Y de centre (cx,cy,cz)
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en degre
+   @param centre pointeur sur le point3d servant de centre à la rotation
+   @return aucun
+*/
+void a2ri_skeleton_rotateY_degre_center (
+				   skeleton * s,
+				   double angle,
+				   const point3d * const centre);
+
+/**
+   Rotation d'un squelette en radian autour de l'axe Z
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en radian
+   @return aucun
+*/
+void a2ri_skeleton_rotateZ_radian (
+			     skeleton * s,
+			     double angle);
+
+/**
+   Rotation d'un squelette en degré autour de l'axe Z
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en degré
+   @return aucun
+*/
+void a2ri_skeleton_rotateZ_degre (
+			    skeleton * s,
+			    double angle);
+
+/**
+   Rotation d'un squelette en radian suivant l'axe Z de centre (cx,cy,cz)
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en radian
+   @param centre pointeur sur le point3d servant de centre à la rotation
+   @return aucun
+*/
+void a2ri_skeleton_rotateZ_radian_center (
+				    skeleton * s,
+				    double angle,
+				    const point3d * const centre);
+
+/**
+   Rotation d'un squelette en degre suivant l'axe Z de centre (cx,cy,cz)
+   @param v pointeur sur le squelette
+   @param angle angle de rotation du squelette en degre
+   @param centre pointeur sur le point3d servant de centre à la rotation
+   @return aucun
+*/
+void a2ri_skeleton_rotateZ_degre_center (
+				   skeleton * s,
+				   double angle,
+				   const point3d * const centre);
+
+/**
+   Rotation d'un squelette en degre suivant l'axe donnée
+   @param m pointeur sur le squelette
+   @param angle angle de rotation du squelette en degre
+   @param axe l'axe de rotation
+   @return aucun
+*/
+void a2ri_skeleton_rotate_axe_radian (
+				skeleton * s,
+				double angle,
+				const vector3d * const axe);
+
+/**
+   Ajout des points d'un skeleton dans une partition de l'espace
+   @param m le squelette
+   @param sp la partition de l'espace
+   @return aucun
+*/
+void a2ri_skeleton_space_partition (
+			      const skeleton * const s,
+			      space_partition * sp);
+
+#endif

@@ -1,0 +1,83 @@
+24/07/10
+	* Optimisation de l'algorithme A*
+
+14/04/10
+	* Ajout de l'algorithme A* pour la recherche de chemin géodésique
+
+25/02/10
+	* Multi-threading des algorithmes de recalage 
+	* Multi-threading de l'algorithme permettant le calcul du taux de
+	recouvrement.
+	* Multi-threading de l'algorithme de nettoyage de vues
+	
+23/02/10
+	* Optimisation de l'algorithme de nettoyage de vues
+	* Multi-threading de l'exemple space_partition
+
+16/02/10
+	* Optimisation de l'algorithme automated_trimmed_icp (tri rapide
+	pour le rejet de paires)
+
+15/02/10 Rémi Synave 
+	* Implémentation de l'ouverture "rapide" d'un fichier STL. Méthode
+	basée sur les space_partition 
+
+08/01/10 Rémi Synave
+	* Changement de nom de la structure hash_model en vf
+
+06/06/09 Rémi Synave
+	* Ajout de l'exemple space_partition
+
+06/06/09 Hai-Duong N'Guyen, Romain Leguay, Marianne Fichoux, Rémi Synave 
+	* Ajout d'un paramètre de sensibilité pour l'algorithme
+	automated_trimmed_icp
+	* Ajout du support multi-passe pour l'algorithme BPA
+	* Adaptation des exemples avec les nouveaux prototypes des
+	fonctions 
+
+28/05/2009 Hai-Duong N'guyen
+	* Modification de la fonction de triangulation BPA
+
+25/05/09 Rémi Synave
+	* Ajout d'une fonction de clonage d'un vf_model
+	* Modification des mesures géodésiques afin de ne pas subdiviser
+	le modèle mais en gardant le même comportement
+
+06/05/09 Rémi Synave
+	* Modification de la fonction “vf_model_oriented_bounding_box”
+	pour calculer l’OBB d’un maillage complet.
+	* Les fonctions “center_of_mass” et “cross_variance” sont
+	maintenant dans le module geometry. 
+
+19/04/09 Rémi Synave
+	* Mise à jour de l'algorithme automated_trimmed_icp
+	* Ajout d'une fonction de calcul d'intersection entre deux
+	bounding ball (vf_model_bounding_ball_minimale_find_overlapping)
+
+07/04/09 Rémi Synave
+	* passage en version 0.2 grâce à la contribution de Romain Leguay,
+	Nguyen Haiduong, Solange Houeto et Marianne Fichoux qui ont
+	travaillé sur la reconstruction de surface - algorithme BPA dans
+	le module triangulation. 
+
+03/03/09 Rémi Synave
+	* Correction d'un bug dans les méthodes de calcul de chemin
+	géodésique utilisant l'algorithme "approche" pour calculer le
+	chemin approximatif menant à une erreur de segmentation 
+
+26/03/09 Rémi Synave
+	* Ajout de la fonction vf_model_automated_trimmed_icp pour un
+	recalage totalement automatique de deux maillages 
+
+20/03/09 Rémi Synave
+	* Correction d'un bug d'allocation de mémoire
+
+15/03/09  Rémi Synave
+	* Modification de la fonction d'épaississement (bug d'orientation
+	des faces)
+	* Modification des fonctions d'ouverture/sauvegarde des fichiers
+	STL 
+
+26/03/11 Rémi Synave
+	* Correction d'un bug dû à un problème de locale par défaut du
+	système

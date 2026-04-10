@@ -1,0 +1,56 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque ICP}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Les différentes variantes de l'ICP (Iterative Closest Point \cite{BK1992}) sont implémentées dans cette biliothèque.\\
+
+\section{Fonctions}
+
+
+\textbullet \texttt{void vf\_model\_trimmed\_icp(vf\_model *P, vf\_model *X,double recouvrement, double dkarret)}\\
+Trimmed Icp est une variante de l'ICP\cite{BK1992} introduit par Chetverikov \cite{CSK2002}. Pour fonctionner, la fonction a besoin d'un taux de recouvrement qui pourra être calculé avec l'une des fonctions de la bibliothèque \texttt{OVERLAP.SO}.\\
+\textbf{Algorithme :}\\
+1)Mettre en correspondance tous les sommets de \texttt{P} avec le sommet le plus proche, suivant la distance euclidienne, de \texttt{X}.\\
+2)Trier les couples par ordre croissant de distance et ne garder que le pourcentage correspondant au taux de recouvrement passé en paramètre.\\
+3)Calcul de la transformation rigide (translation et rotation) minimisant l'erreur des moindres carrés (somme des distances au carré) sur les couples selectionnés : la méthode utilisée pour calculer la transformation rigide est celle des quaternions unités \cite{H1987,ELF1997}. Application de la transformation au modèle \texttt{P}.\\
+4)Calcul de l'erreur des moindres carrés entre les deux modèles et réitération si le critère d'arrêt n'est pas satisfait.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{P} : Modèle servant de base au recalage.\\
+\texttt{X} : Modèle à recaler.\\
+\texttt{recouvrement} : taux de recouvrement entre les deux modèles.\\
+\texttt{dkarret} : critère d'arret. L'algorithme s'arrete si l'erreur moyenne est inférieur à dkarret.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void vf\_model\_icp\_bb(vf\_model *P, vf\_model *X, double dkarret)}\\
+Variante de l'ICP. Application de l'algorithme ICP sur les sommets appartenant aux faces s'intersectant.\\
+\textbf{Algorithme :}\\
+1)Trouver les faces du modèle \texttt{P} et \texttt{X} s'intersectant.
+2)Extraire les sommets de ces deux listes de faces.
+3)Mettre en correspondance tous les sommets trouvés de \texttt{P} avec le sommet le plus proche, suivant la distance euclidienne, de la liste de sommets de \texttt{X}.\\
+4)Calcul de la transformation rigide (translation et rotation) minimisant l'erreur des moindres carrés (somme des distances au carré) : la méthode utilisée pour calculer la transformation rigide est celle des quaternions unités \cite{H1987,ELF1997}. Application de la transformation au modèle \texttt{P}.\\
+5)Calcul de l'erreur des moindres carrés entre les deux modèles et réitération si le critère d'arrêt n'est pas satisfait.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{P} : Modèle servant de base au recalage.\\
+\texttt{X} : Modèle à recaler.\\
+\texttt{dkarret} : critère d'arret. L'algorithme s'arrete si l'erreur moyenne est inférieur à dkarret.\\
+\texttt{retour} : aucun.\\
+
+
+\bibliographystyle{unsrt}
+\bibliography{manuel}
+
+\end{document}

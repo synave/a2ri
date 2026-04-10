@@ -1,0 +1,30 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque CONVERSION}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Bibliothèque permettant de faire des conversion de format de fichiers.\\
+
+\section{Fonction}
+
+\textbullet \texttt{void vf\_model\_conversion(char* input, char* output)}\\
+Conversion d'un type de fichier vers un autre type de fichier. Les types de fichiers sont définis en fonction de leur extension.\\
+Formats supportés en ouverture : PGN, OFF, PLY, OBJ, WRL, VEF, GTS.\\
+Formats supportés en écriture : PGN, OFF, PLY, WRL, VEF.\\
+~//
+\underline{Paramètres et type de retour :}\\
+\texttt{input} : Chaine de caractères désignant un modèle.\\
+\texttt{ouput} : Chaine de caractères désignant le nom du nouveau modèle.\\
+\texttt{retour} : aucun.\\
+
+\end{document}

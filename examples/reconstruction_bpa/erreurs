@@ -1,0 +1,1 @@
+./reconstruction_bpa ~/Recherche/maillages/columbia_university_models/teapot.off test.pgn 0.2

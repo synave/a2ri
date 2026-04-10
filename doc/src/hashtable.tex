@@ -1,0 +1,124 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+
+\author{Rémi Synave, Stefka Gueorguieva, Pascal Desbarats}
+\title{Manuel de la bibliothèque HASHTABLE}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Utilisation}
+Dans cette bibliothèque sont implémentées les fonctions permettant le stockage des \texttt{vf\_edge} dans une table de hachage.\\
+Les fonctions de bases sont implémentées telles que la création d'une table de hachage, la libération de la mémoire, l'ajout d'une arete, la recherche d'arete ou l'application d'une fonction pour toutes les aretes.\\
+
+\section{Structures de données}
+La première structure de données permet de stocker une \texttt{vf\_edge} et de faire le lien avec les aretes pour lesquelles la clé de hachage est la meme.\\
+
+\begin{verbatim}
+struct mycontainer
+{
+  struct mycontainer *next; //pointeur vers le conteneur suivant
+  vf_edge *data; //l'arete
+};
+
+typedef struct mycontainer container;
+\end{verbatim}
+
+Le conteneur étant défini, il faut encore définir le tableau servant de table de hachage. Celui-ci continent deux attributs : la taille de la table de hachage et le nombre d'arete stockée dans la table.\\
+
+\begin{verbatim}
+typedef struct
+{
+  int size_array; //taille de la table de hachage
+  int count; //nombre d'arete stockée
+  container* *list; //tableau où seront stockées les aretes.
+}hashtable;
+\end{verbatim}
+
+Une dernière structure est nécessaire au fonctionnement de cette bibliothèque. Cette structure permet de passer en paramètre un pointeur de fonction à la fonction \texttt{for\_each}. Cette fonction passé par pointeur sera appliquée à toutes les aretes. Lors de l'appel à la fonction, le premier paramètre de type \texttt{int} est la clé de hachage, le second paramètre est la \texttt{vf\_edge} et le dernier paramètre est un pointeur vers des données auxquelles l'utilisateur veut pouvoir accéder.\\
+
+\begin{verbatim}
+typedef void (*ptf_foreach) (int, vf_edge*, void*);
+\end{verbatim}
+
+
+\section{Fonctions}
+\textbullet \texttt{hashtable* hashtable\_new(int size)}\\
+Création d'une hashtable de taille \texttt{size}.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{size} : taille de la table de hachage.\\
+\texttt{retour} : une nouvelle table de hachage.\\
+
+
+\textbullet \texttt{void hashtable\_free(hashtable *table)}\\
+Libération de la mémoire allouée pour la table de hachage.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{table} : la table de hachage.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{void hashtable\_add(hashtable *table,vf\_edge *e)}\\
+Ajout d'une \texttt{vf\_edge} dans la table de hachage. Attention, l'arete n'est pas copié donc la mémoire de l'arete ne doit pas etre libérer apres l'ajout. La libération de la mémoire est automatique lors de l'appel à \texttt{hashtable\_free}\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{table} : la table de hachage.\\
+\texttt{e} : l'arete à ajouter.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{vf\_edge hashtable\_look\_for(hashtable *table, int ve1, int ve2)}\\
+Recherche d'une \texttt{vf\_edge} dans la table de hachage. La recherche se fait sur les numéros de sommets. L'ordre ve1,ve2 n'est pas important lors de la recherche. La fonction retourne le pointeur sur la \texttt{vf\_edge} ou NULL si l'arete n'appartient pas à la hashtable.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{table} : la table de hachage.\\
+\texttt{ve1} : premier sommet de l'arete.\\
+\texttt{ve2} : second sommet de l'arete.\\
+\texttt{retour} : un pointeur sur l'arete si elle existe, NULL sinon.\\
+
+
+
+\textbullet \texttt{void hashtable\_display(hashtable *table)}\\
+Affichage de la table de hachage sous la forme :\\
+\begin{verbatim}
+clé :
+  arete 1
+  arete 2
+  ...
+clé :
+  arete 1
+  arete 2
+  ...
+...
+\end{verbatim}
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{table} : la table de hachage.\\
+\texttt{retour} : aucun.\\
+
+
+\textbullet \texttt{int hashtable\_size(hashtable *table)}\\
+Retourne le nombre d'arete stockée dans la table de hachage.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{table} : la table de hachage.\\
+\texttt{retour} : nombre d'arete dans la hashtable.\\
+
+
+
+\textbullet \texttt{void hashtable\_foreach(hashtable *table, ptf\_foreach func, void* user\_data)}
+Application de la fonction \texttt{func} à toutes les aretes de la table de hachage.\\
+~\\
+\underline{Paramètres et type de retour :}\\
+\texttt{table} : la table de hachage.\\
+\texttt{func} : pointeur sur la fonction à appliquer à toutes les aretes de la hahtable \texttt{table}.\\
+\texttt{user\_data} : pointeur sur des données que l'utilisateur veut pouvoir utiliser lors de l'appel à la fonction \texttt{func}.\\
+\texttt{retour} : nombre d'arete dans la hashtable.\\
+
+\end{document}

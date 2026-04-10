@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$(id -u)" != "0" ]; then
+    # script lance avec un utilisateur local
+    # rm -rf ~/.liba2ri
+    echo "Veuillez passer en mode super utilisateur"
+else
+    #script lance en mode super utilisateur
+    rm -rf *~ /usr/local/include/a2ri /usr/local/lib/liba2ri* /usr/local/share/doc/a2ri
+    echo "Suppression terminee"
+fi
