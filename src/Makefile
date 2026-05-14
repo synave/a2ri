@@ -14,6 +14,7 @@ TARGET_SO = liba2ri_dyn.so
 
 all : $(TARGET_O) $(TARGET_SO)
 	ar r liba2ri.a *.o
+	mkdir -p ../lib
 	mv *.so *.a ../lib/
 
 %.so :

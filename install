@@ -17,10 +17,10 @@ else
     mv lib/liba2ri_dyn.so lib/liba2ri.so
     cp lib/liba2ri* /usr/local/lib/
     rm -rf /usr/local/include/a2ri
-    mkdir /usr/local/include/a2ri
+    mkdir -p /usr/local/include/a2ri
     cp include/*.h /usr/local/include/a2ri/
     chmod -R 755 /usr/local/include/a2ri
-    mkdir /usr/local/share/doc/a2ri/
+    mkdir -p /usr/local/share/doc/a2ri/
     cp -r doc/* /usr/local/share/doc/a2ri/
     rm -rf /usr/local/share/doc/a2ri/CVS
     rm -rf /usr/local/share/doc/a2ri/*/CVS
