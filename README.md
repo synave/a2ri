@@ -13,3 +13,7 @@ Auteur : Rémi Synave
 email : remi.synave@nuiv-littoral.fr
 
 Ce code est toujours en développement. N'hésitez pas à signaler les BUGS !!
+
+## Pré-requis
+
+apt install libgsl-dev
