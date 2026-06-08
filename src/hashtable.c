@@ -114,7 +114,7 @@ hashtable_add (
 	       hashtable * table,
 	       vf_edge * e)
 {
-  char temp[20];
+  char temp[128];
 
   if (e->ve1 < e->ve2)
     sprintf (temp, "%d,%d", e->ve1, e->ve2);
@@ -167,8 +167,6 @@ hashtable_look_for (
 {
   char variable[300];
 
-  a2ri_erreur_critique_si (variable == NULL,
-			"erreur allocation memoire pour temp\nhashtable_look_for\n");
   variable[0] = 0;
 
   int trouve = 0;

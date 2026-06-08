@@ -569,9 +569,9 @@ int a2ri_vef_load_ply_binary(
     a2ri_vef_add_edge (m, ve2, ve3, 1);
     a2ri_vef_add_edge (m, ve3, ve1, 1);
     //recherche des aretes
-    int ed1 = a2ri_vef_search_edge (m, ve1, ve2);
-    int ed2 = a2ri_vef_search_edge (m, ve2, ve3);
-    int ed3 = a2ri_vef_search_edge (m, ve3, ve1);
+    ed1 = a2ri_vef_search_edge (m, ve1, ve2);
+    ed2 = a2ri_vef_search_edge (m, ve2, ve3);
+    ed3 = a2ri_vef_search_edge (m, ve3, ve1);
     //ajout de la faces avec les trois aretes
     a2ri_vef_add_face (m, ed1, ed2, ed3);
   }
