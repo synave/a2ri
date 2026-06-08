@@ -7,7 +7,7 @@ LIBS = -Wl,-E -ldl -rdynamic -shared -lm -lgsl -lgslcblas -lpthread
 #LIBS = -lm -lgsl -lgslcblas -lpthread
 
 
-TARGET_O = debug.o matrix.o util.o point.o vector.o geometry.o vertex.o edge.o face.o hashtable.o space_partition.o skeleton.o model.o io.o boundingbox.o conversion.o subdivision.o topology.o shapematching.o quality.o overlap.o  icp.o triangulation.o graph.o geodesique.o epaississement.o curvature.o
+TARGET_O = debug.o matrix.o util.o point.o vector.o geometry.o vertex.o edge.o face.o hashtable.o space_partition.o skeleton.o model.o ply.o io.o boundingbox.o conversion.o subdivision.o topology.o shapematching.o quality.o overlap.o  icp.o triangulation.o graph.o geodesique.o epaississement.o
 
 TARGET_SO = liba2ri_dyn.so
 

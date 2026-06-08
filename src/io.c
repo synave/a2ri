@@ -24,6 +24,7 @@
 /***************************************************************************/
 
 #include "io.h"
+#include "ply.h"
 
 /********** INTERMEDIATE TYPES AND FUNCTIONS **********/
 /* Les fonctions intermédiaires sont préfixées de IF  */
@@ -1062,123 +1063,7 @@ a2ri_vf_load_gts (
   return 1;
 }
 
-/**
-   Ouverture d'un fichier ply contenant un modèle
-   @param file chemin du fichier à ouvrir
-   @param m pointeur sur le modèle
-   @return 1 si succès, 0 sinon
-*/
-int
-a2ri_vf_load_ply (
-		  const char * const file,
-		  vf_model * m)
-{
-  int prop = 0,
-    nbpropvertex = 0,
-    nbpropface = 0,
-    nbvertex,
-    nbface,
-    ve1,
-    ve2,
-    ve3;
-  char str[20];
-  double coordx,
-    coordy,
-    coordz;
 
-  FILE *is = NULL;
-
-  setlocale(LC_NUMERIC,"C");
-
-  is = fopen (file, "r");
-  if (is == NULL)
-    return 0;
-
-  a2ri_erreur_critique_si(!fscanf (is, "%s", str),"erreur en ouverture de fichier");
-
-  if (strcmp (str, "ply"))
-    return 0;
-
-  while (strcmp (str, "end_header"))
-    {
-      a2ri_erreur_critique_si(!fscanf (is, "%s", str),"erreur en ouverture de fichier");
-      if (prop == 1 && !strcmp (str, "property"))
-	nbpropvertex++;
-      if (prop == 2 && !strcmp (str, "property"))
-	nbpropface++;
-
-      if (!strcmp (str, "element"))
-	{
-	  a2ri_erreur_critique_si(!fscanf (is, "%s", str),"erreur en ouverture de fichier");
-	  //lecture du nombre de sommets
-	  if (!strcmp (str, "vertex"))
-	    {
-	      prop = 1;
-	      a2ri_erreur_critique_si(!fscanf (is, "%d", &nbvertex),"erreur en ouverture de fichier");
-	    }
-	  //lecture du nombre de face
-	  else
-	    {
-	      if (!strcmp (str, "face"))
-		{
-		  prop = 1;
-		  a2ri_erreur_critique_si(!fscanf (is, "%d", &nbface),"erreur en ouverture de fichier");
-		}
-	    }
-	}
-    }
-
-  //lecture des sommets
-  for (int i = 0; i < nbvertex; i++)
-    {
-      a2ri_erreur_critique_si(!fscanf (is, "%lf %lf %lf", &coordx, &coordy, &coordz),"erreur en ouverture de fichier");
-      //ajout d'un sommet
-      a2ri_vf_add_vertex (m, coordx, coordy, coordz);
-      //mis à jour de la bounding box
-      if (i == 0)
-	{
-	  m->xmin = coordx;
-	  m->xmax = coordx;
-	  m->ymin = coordy;
-	  m->ymax = coordy;
-	  m->zmin = coordz;
-	  m->zmax = coordz;
-	}
-      else
-	{
-	  if (coordx < m->xmin)
-	    m->xmin = coordx;
-	  if (coordx > m->xmax)
-	    m->xmax = coordx;
-	  if (coordy < m->ymin)
-	    m->ymin = coordy;
-	  if (coordy > m->ymax)
-	    m->ymax = coordy;
-	  if (coordz < m->zmin)
-	    m->zmin = coordz;
-	  if (coordz > m->zmax)
-	    m->zmax = coordz;
-	}
-      for (int j = 0; j < nbpropvertex - 4; j++)
-	a2ri_erreur_critique_si(!fscanf (is, "%s", str),"erreur en ouverture de fichier");
-
-    }
-
-  //lecture des faces
-  for (int i = 0; i < nbface; i++)
-    {
-      a2ri_erreur_critique_si(!fscanf (is, "%d", &ve1),"erreur en ouverture de fichier");
-      a2ri_erreur_critique_si(!fscanf (is, "%d %d %d", &ve1, &ve2, &ve3),"erreur en ouverture de fichier");
-      //ajout d'une face
-      a2ri_vf_add_face (m, ve1, ve2, ve3);
-    }
-
-  fclose (is);
-
-  setlocale(LC_NUMERIC,"");
-
-  return 1;
-}
 
 /**
    Ouverture d'un fichier off contenant un modèle
@@ -2008,56 +1893,6 @@ a2ri_vf_save_off (
   setlocale(LC_NUMERIC,"");
 
   return 1;
-}
-
-/**
-   Enregistrement d'un modèle dans un fichier ply
-   @param file chemin du fichier
-   @param m modèle à sauvegarder
-   @return 1 si succès, 0 sinon
-*/
-int
-a2ri_vf_save_ply (
-		  const char * const file,
-		  const vf_model * const m)
-{
-  int ve1,
-    ve2,
-    ve3;
-
-  setlocale(LC_NUMERIC,"C");
-
-  FILE *os = NULL;
-  os = fopen (file, "w");
-  if (os == NULL)
-    return 0;
-
-  //ecriture des en-tetes
-  fprintf (os, "ply\nformat ascii 1.0\ncomment zipper output\n");
-  fprintf (os,
-	   "element vertex %d\nproperty float x\nproperty float y\nproperty float z\nelement face %d\n",
-	   m->nbvertex, m->nbface);
-  fprintf (os, "property list uchar int vertex_indices\nend_header\n");
-
-  //ecriture des sommets
-  for (int i = 0; i < m->nbvertex; i++)
-    fprintf (os, "%f %f %f\n", m->ve[i].x, m->ve[i].y, m->ve[i].z);
-
-  //ecriture des faces
-  for (int i = 0; i < m->nbface; i++)
-    {
-      ve1 = m->fa[i].ve1;
-      ve2 = m->fa[i].ve2;
-      ve3 = m->fa[i].ve3;
-      fprintf (os, "3 %d %d %d \n", ve1, ve2, ve3);
-    }
-
-  fclose (os);
-
-  setlocale(LC_NUMERIC,"");
-
-  return 1;
-
 }
 
 /**
@@ -3162,128 +2997,7 @@ a2ri_vef_load_gts (
   return 1;
 }
 
-/**
-   Ouverture d'un fichier ply contenant un modèle
-   @param file chemin du fichier à ouvrir
-   @param m pointeur sur le modèle
-   @return 1 si succès, 0 sinon
-*/
-int
-a2ri_vef_load_ply (
-		   const char * const file,
-		   vef_model * m)
-{
-  int prop = 0,
-    nbpropvertex = 0,
-    nbpropface = 0,
-    nbvertex,
-    nbface,
-    ve1,
-    ve2,
-    ve3;
-  char str[20];
-  double coordx,
-    coordy,
-    coordz;
 
-  FILE *is = NULL;
-
-  setlocale(LC_NUMERIC,"C");
-
-  is = fopen (file, "r");
-  if (is == NULL)
-    return 0;
-
-
-  a2ri_erreur_critique_si(!fscanf (is, "%s", str),"erreur en ouverture de fichier");
-
-  if (strcmp (str, "ply"))
-    return 0;
-
-  while (strcmp (str, "end_header"))
-    {
-      a2ri_erreur_critique_si(!fscanf (is, "%s", str),"erreur en ouverture de fichier");
-      if (prop == 1 && !strcmp (str, "property"))
-	nbpropvertex++;
-      if (prop == 2 && !strcmp (str, "property"))
-	nbpropface++;
-
-      if (!strcmp (str, "element"))
-	{
-	  a2ri_erreur_critique_si(!fscanf (is, "%s", str),"erreur en ouverture de fichier");
-	  //lecture du nombre de sommets
-	  if (!strcmp (str, "vertex"))
-	    {
-	      prop = 1;
-	      a2ri_erreur_critique_si(!fscanf (is, "%d", &nbvertex),"erreur en ouverture de fichier");
-	    }
-	  //lecture du nombre de faces
-	  else
-	    {
-	      prop = 1;
-	      a2ri_erreur_critique_si(!fscanf (is, "%d", &nbface),"erreur en ouverture de fichier");
-	    }
-	}
-    }
-
-  //lecture des sommets
-  for (int i = 0; i < nbvertex; i++)
-    {
-      a2ri_erreur_critique_si(!fscanf (is, "%lf %lf %lf", &coordx, &coordy, &coordz),"erreur en ouverture de fichier");
-      a2ri_vef_add_vertex (m, coordx, coordy, coordz);
-      //mis à jour de la bounding box
-      if (i == 0)
-	{
-	  m->xmin = coordx;
-	  m->xmax = coordx;
-	  m->ymin = coordy;
-	  m->ymax = coordy;
-	  m->zmin = coordz;
-	  m->zmax = coordz;
-	}
-      else
-	{
-	  if (coordx < m->xmin)
-	    m->xmin = coordx;
-	  if (coordx > m->xmax)
-	    m->xmax = coordx;
-	  if (coordy < m->ymin)
-	    m->ymin = coordy;
-	  if (coordy > m->ymax)
-	    m->ymax = coordy;
-	  if (coordz < m->zmin)
-	    m->zmin = coordz;
-	  if (coordz > m->zmax)
-	    m->zmax = coordz;
-	}
-      for (int j = 0; j < nbpropvertex - 4; j++)
-	a2ri_erreur_critique_si(!fscanf (is, "%s", str),"erreur en ouverture de fichier");
-    }
-
-  //lecture des faces
-  for (int i = 0; i < nbface; i++)
-    {
-      a2ri_erreur_critique_si(!fscanf (is, "%d", &ve1),"erreur en ouverture de fichier");
-      //lecture des trois sommets composant la face
-      a2ri_erreur_critique_si(!fscanf (is, "%d %d %d", &ve1, &ve2, &ve3),"erreur en ouverture de fichier");
-      //ajout des aretes avec vérification au préalable de leur existence
-      a2ri_vef_add_edge (m, ve1, ve2, 1);
-      a2ri_vef_add_edge (m, ve2, ve3, 1);
-      a2ri_vef_add_edge (m, ve3, ve1, 1);
-      //recherche des aretes
-      int ed1 = a2ri_vef_search_edge (m, ve1, ve2);
-      int ed2 = a2ri_vef_search_edge (m, ve2, ve3);
-      int ed3 = a2ri_vef_search_edge (m, ve3, ve1);
-      //ajout de la faces avec les trois aretes
-      a2ri_vef_add_face (m, ed1, ed2, ed3);
-    }
-
-  fclose (is);
-
-  setlocale(LC_NUMERIC,"");
-
-  return 1;
-}
 
 /**
    Ouverture d'un fichier off contenant un modèle
@@ -3630,52 +3344,6 @@ a2ri_vef_save_off (
 
   //ecriture de l'en-tete et des nombres de sommets et faces
   fprintf (os, "OFF\n%d %d 0\n\n", m->nbvertex, m->nbface);
-
-  //ecriture des sommets
-  for (int i = 0; i < m->nbvertex; i++)
-    fprintf (os, "%f %f %f\n", m->ve[i].x, m->ve[i].y, m->ve[i].z);
-
-  //ecriture des faces
-  for (int i = 0; i < m->nbface; i++)
-    {
-      int ve1,
-        ve2,
-        ve3;
-      vef_face_get_vertices (&(m->fa[i]), m->ed, &ve1, &ve2, &ve3);
-      fprintf (os, "3 %d %d %d \n", ve1, ve2, ve3);
-    }
-
-  fclose (os);
-
-  setlocale(LC_NUMERIC,"");
-
-  return 1;
-}
-
-/**
-   Enregistrement d'un modèle dans un fichier ply
-   @param file chemin du fichier
-   @param m modèle à sauvegarder
-   @return 1 si succès, 0 sinon
-*/
-int
-a2ri_vef_save_ply (
-		   const char * const file,
-		   const vef_model * const m)
-{
-  setlocale(LC_NUMERIC,"C");
-
-  FILE *os = NULL;
-  os = fopen (file, "w");
-  if (os == NULL)
-    return 0;
-
-  //ecriture de l'en-tete avec le nombre de sommets et de faces
-  fprintf (os, "ply\nformat ascii 1.0\ncomment zipper output\n");
-  fprintf (os,
-	   "element vertex %d\nproperty float x\nproperty float y\nproperty float z\nelement face %d\n",
-	   m->nbvertex, m->nbface);
-  fprintf (os, "property list uchar int vertex_indices\nend_header\n");
 
   //ecriture des sommets
   for (int i = 0; i < m->nbvertex; i++)
