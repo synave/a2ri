@@ -10,7 +10,7 @@ Le but de cette bibliothèque est le recalage, la reconstruction et le traitemen
 - traitement d’une surface non imprimable en vue d'une impression
 
 Auteur : Rémi Synave
-email : remi.synave@nuiv-littoral.fr
+email : remi.synave@univ-littoral.fr
 
 Ce code est toujours en développement. N'hésitez pas à signaler les BUGS !!
 
